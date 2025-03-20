@@ -6,7 +6,6 @@
 //
 
 @testable import NetworkStubberPackage
-import os
 import XCTest
 
 final class MockNetworkStubLogger: NetworkStubberLogProtocol {
