@@ -1,0 +1,67 @@
+name: ☁️ Pull Request Runner
+
+# Trigger when a PR is synchronized (updated), reopened, or marked as ready for review.
+on:
+  pull_request:
+    types:
+      - synchronize
+      - reopened
+      - ready_for_review
+  workflow_dispatch: {}
+
+jobs:
+
+  #-------------------------
+  # Run Linting & Formatting
+  # (∩｀-´)⊃━☆ﾟ.*･｡ﾟ
+  #-------------------------
+
+  Lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: 🔄 Checking Out Repository
+        uses: actions/checkout@v4
+
+      - name: 🛠 SwiftLint Check
+        uses: norio-nomura/action-swiftlint@3.2.1
+        with:
+          args: --strict --config fastlane/.swiftlint.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  Format:
+    runs-on: macos-latest
+    steps:
+      - name: 🔄 Checking Out Repository
+        uses: actions/checkout@v3
+
+      - name: SwiftFormat
+        run: |
+          echo "🕵️ Running SwiftFormat"
+          swiftformat --dryrun --lint . --reporter github-actions-log --config fastlane/.swiftFormat
+     
+      - name: 🕵️ Validation Complete!
+        run: |
+          echo "🔥 Linting & Formatting Completed 🤣"
+          
+  Test:
+    runs-on: macos-latest
+    needs: [Format, Lint]
+    timeout-minutes: 30
+    steps:
+      - name: 🔄 Checking Out Repository
+        uses: actions/checkout@v3
+
+      - name: 🔧 Install Fastlane Dependencies
+        run: |
+          gem install bundler
+          bundle install --path vendor/bundle
+
+      - name: 🚀 Run Fastlane Tests
+        run: bundle exec fastlane test
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: ✅ Tests Completed
+        run: echo "🚀 Fastlane Tests Finished Successfully!"

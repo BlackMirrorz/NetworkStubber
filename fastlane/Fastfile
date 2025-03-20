@@ -1,0 +1,210 @@
+#----------------------------------------
+# Fastlane Pipeline
+# Copyright 2025
+# Created By Josh Robbins (∩｀-´)⊃━☆ﾟ.*･｡ﾟ
+#----------------------------------------
+
+#--------------------------
+# ⚙️ Internal Configuration
+#--------------------------
+
+# Set Development Platform
+default_platform(:ios)
+
+#---------------------------
+# ⚙️ Dependency Installation
+#---------------------------
+
+# Setup Base Dependencies On Your Machine
+desc "☁️  Installs Base Dependencies For Our Devs."
+lane :setupMac do
+  sh "chmod +x ./scripts/configuration.sh"
+  sh "./scripts/configuration.sh"
+  UI.success("🫠 Base Dependencies Configured.")
+end
+
+#-----------------------------
+# Linting & Code Formatting
+# Runs SwiftLint & SwiftFormat
+#-----------------------------
+
+desc "☁️  Validates The Current Project Using SwiftLint And Swift Format"
+lane :lintFormatValidate do
+  lint_and_format_project(action: :lint, tool: :lint)
+  lint_and_format_project(action: :validate_format, tool: :format)
+  UI.success("✅ Code Standardisation Completed 🫠")
+end
+
+desc "☁️  Lints And Formats The Current Project"
+lane :lintFormatCorrect do
+  lint_and_format_project(action: :fix, tool: :lint)
+  lint_and_format_project(action: :format, tool: :format)
+  UI.success("✅ Code Standardisation Completed 🫠")
+end
+
+desc "☁️ Lints Or Formats The Swift Project"
+private_lane :lint_and_format_project do |options|
+  UI.success("☁️ Lints Or Formats The Swift Project")
+
+  action = options[:action] # :lint, :fix, :format, or :validate_format
+  tool = options[:tool]     # :lint for SwiftLint or :format for SwiftFormat
+
+  swift_tool_info = swift_tool_version_extractor(tool: tool.to_s)
+  executable_path = swift_tool_info[:swifttool_executable]
+  UI.success("Executable File Extrapolated: #{executable_path}")
+
+  # Compute the project root directory (assuming Fastfile is in fastlane)
+  project_directory = File.expand_path("..", File.dirname(__FILE__))
+  UI.success("Project Directory: #{project_directory}")
+
+  # Define directories to enumerate using absolute paths.
+  directoriesToEnumerate = [
+    "#{project_directory}",
+    "#{project_directory}/Sources",
+    "#{project_directory}/Tests",
+  ].select do |dir|
+    normalized_dir = Pathname.new(dir).cleanpath.to_s
+    if File.directory?(normalized_dir)
+      swift_files = Dir.glob("#{normalized_dir}/**/*.swift", File::FNM_CASEFOLD)
+      if swift_files.empty?
+        UI.important("🚫 Removing #{normalized_dir}: No Swift files found")
+        false
+      else
+        UI.message("📂 Keeping #{normalized_dir}: Found #{swift_files.count} Swift files")
+        true
+      end
+    else
+      UI.important("🚫 Skipping #{normalized_dir}: Directory does not exist")
+      false
+    end
+  end
+
+  directories = directoriesToEnumerate
+  UI.success("Final Directories to Process: #{directories}")
+
+  if directories.empty?
+    UI.important("🚫 No valid directories with Swift files found. Skipping lint/format.")
+    next
+  end
+
+  swiftlint_config = File.expand_path(File.join(File.dirname(__FILE__), ".swiftlint.yml"))
+  swiftformat_config = File.expand_path(File.join(File.dirname(__FILE__), ".swiftformat"))
+ 
+  UI.success("✅ Using SwiftLint config: #{swiftlint_config}")
+  UI.success("✅ Using SwiftFormat config: #{swiftformat_config}")
+
+  case tool
+  when :lint
+    directories.each do |dir|
+      swiftlint(
+        mode: action == :fix ? :fix : :lint,
+        executable: executable_path,
+        config_file: swiftlint_config,
+        raise_if_swiftlint_error: true,
+        ignore_exit_status: false,
+        path: dir  # Pass the directory path as the trailing parameter.
+      )
+    end
+  when :format
+    directories.each do |dir|
+      swiftformat(
+        executable: executable_path,
+        path: dir,
+        swiftversion: "5",
+        config: swiftformat_config,
+        dryrun: action == :validate_format,
+        lint: action == :validate_format
+      )
+    end
+  else
+    UI.error("❌ Invalid tool specified: #{tool}")
+  end
+
+  UI.success("✅ Action #{action} With #{tool} Completed")
+end
+
+#----------------
+# Tests
+# Runs Unit Tests
+#----------------
+
+desc "☁️ Runs Unit Tests"
+lane :test do
+  UI.message("🔍 Running Unit Tests on macOS...")
+
+  didPassUnitTests = unit_tests(
+    command: "test",
+    simulator: "macosx"
+  )
+
+  tests_status = didPassUnitTests ? "🏆 Unit Tests Passed 🏆" : "⚠️ Unit Tests Failed ⚠️"
+  message_body = didPassUnitTests ? "🛠️ Good Work! 🛠️" : "🆘 Please Check The Logs! 🆘"
+
+  UI.message("📜 Test Status: #{tests_status}")
+  UI.message("💬 Test Summary: #{message_body}")
+
+  # Clean previous test output if it exists
+  require 'fileutils'
+  test_output_directory = "./test_output"
+  FileUtils.rm_rf(test_output_directory) if Dir.exist?(test_output_directory)
+
+  if didPassUnitTests
+    UI.success("✅ All Unit Tests Passed Successfully!")
+  else
+    UI.error("💥 Tests Failed! See logs for details.")
+    UI.user_error!("💩 Tests Failed")
+  end
+end
+
+#-------------------------
+# Package Release Pipeline
+#-------------------------
+
+desc "☁️ Creates A New Package Version"
+lane :releasePackage do
+
+  increment_version_and_build
+
+  version_number = Actions.lane_context[SharedValues::VERSION_NUMBER]
+  build_number = Actions.lane_context[SharedValues::BUILD_NUMBER]
+
+  add_git_tag(
+    message: "Tagging Version #{version_number} With Build Number #{build_number}",
+    tag: "#{version_number}",
+    build_number: build_number
+  )
+  
+  push_to_git_remote(tags: true)
+
+  set_github_release(
+    api_token: ENV['IOS_GIT_AUTHORIZATION_FOR_WORKFLOWS'],
+    repository_name: "BlackMirrorz/NetworkStubber",
+    name: "#{version_number}",
+    tag_name: "#{version_number}",
+    description: "Latest Release",
+  )
+
+  UI.message("✅ Successfully Created Release #{version_number} 🫠")
+  UI.message("🏆 NetworkStubber Version Updated 🏆")
+  UI.message("🏆 Version: #{version_number} Released 🏆")
+  
+end
+
+#----------------------------------
+# Versioning
+# Increments Version & Build Number
+#----------------------------------
+
+# Increment Build & Version Numbers
+desc "☁️  Increment Version & Build Numbers"
+private_lane :increment_version_and_build do
+  version_path = "./versioning.txt"
+  version_contents = File.read(version_path)
+  version_number_to_set = version_contents[/VERSION=(\S+)/, 1]
+  build_number = version_contents[/BUILD=(\d+)/, 1]
+
+  Actions.lane_context[SharedValues::VERSION_NUMBER] = version_number_to_set
+  Actions.lane_context[SharedValues::BUILD_NUMBER] = build_number
+  
+  UI.success("⚙️ Version #{version_number_to_set} and Build #{build_number} Numbers Incremented Successfully! 🚀")
+end
