@@ -1,6 +1,6 @@
-VERSION=1.0.1
+VERSION=1.0.2
 BUILD=1
 
 RELEASENOTES:
-Update Package Name.
+Update Access Levels.
 Latest Release.

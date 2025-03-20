@@ -10,7 +10,7 @@ import Foundation
 /**
  A URL protocol subclass that intercepts and stubs network requests.
  */
-class NetworkStubber: URLProtocol {
+public class NetworkStubber: URLProtocol {
 
   private static var stubStore: [URL: NetworkStub] = [:]
   private static var logger: NetworkStubberLogProtocol?
@@ -18,7 +18,7 @@ class NetworkStubber: URLProtocol {
   /**
    Determines whether this protocol can handle the given request.
    */
-  override class func canInit(with request: URLRequest) -> Bool {
+  public override class func canInit(with request: URLRequest) -> Bool {
     guard let url = request.url else { return false }
     let stubExists = stubStore.stub(for: url) != nil
     return stubExists
@@ -27,12 +27,12 @@ class NetworkStubber: URLProtocol {
   /**
    Returns a canonical version of the request.
    */
-  override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+  public override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
 
   /**
    Starts loading the request.
    */
-  override func startLoading() {
+  public override func startLoading() {
 
     guard
       let url = request.url,
@@ -71,7 +71,7 @@ class NetworkStubber: URLProtocol {
   /**
    Stops loading the request.
    */
-  override func stopLoading() {}
+  public override func stopLoading() {}
 }
 
 // MARK: - Public Methods
