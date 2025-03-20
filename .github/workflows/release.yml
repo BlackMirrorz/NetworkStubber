@@ -43,4 +43,4 @@ jobs:
 
       - name: 🎉 Deployment Successful!
         run: |
-          echo "🔥 Deployment Of Sequencer Has Completed Sucessfully! 🤣"
+          echo "🔥 Deployment Of NetworkStubber Has Completed Sucessfully! 🤣"
