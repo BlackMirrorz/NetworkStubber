@@ -5,7 +5,7 @@
 //  Created by Josh Robbins on 3/20/25.
 //
 
-@testable import NetworkStubber
+@testable import NetworkStubberPackage
 import XCTest
 
 final class NetworkStubResponseItemTests: XCTestCase {

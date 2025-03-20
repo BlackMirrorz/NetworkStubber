@@ -18,7 +18,7 @@ public class NetworkStubber: URLProtocol {
   /**
    Determines whether this protocol can handle the given request.
    */
-  public override class func canInit(with request: URLRequest) -> Bool {
+  override public class func canInit(with request: URLRequest) -> Bool {
     guard let url = request.url else { return false }
     let stubExists = stubStore.stub(for: url) != nil
     return stubExists
@@ -27,12 +27,12 @@ public class NetworkStubber: URLProtocol {
   /**
    Returns a canonical version of the request.
    */
-  public override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+  override public class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
 
   /**
    Starts loading the request.
    */
-  public override func startLoading() {
+  override public func startLoading() {
 
     guard
       let url = request.url,
@@ -49,7 +49,7 @@ public class NetworkStubber: URLProtocol {
     switch store.type {
     case .error:
       guard let error = store.error else { return }
-      handleStubError(error)
+      handleStubError(error.toNSError())
     case .data:
       guard let dataStub = store.data, let response = dataStub.httpURLResponse(url: url) else { return }
       handleStubData(dataStub, response: response, url: url)
@@ -71,7 +71,7 @@ public class NetworkStubber: URLProtocol {
   /**
    Stops loading the request.
    */
-  public override func stopLoading() {}
+  override public func stopLoading() {}
 }
 
 // MARK: - Public Methods
@@ -144,7 +144,8 @@ extension NetworkStubber {
    */
   private func handleStubResponse(_ stubResponse: NetworkStubResponseItem, url: URL) {
     NetworkStubber.logger?.logMessage("📡 Stubbing response for \(url): \(stubResponse.debugString)")
-    setClient(response: stubResponse.response, dataToLoad: stubResponse.data)
+    guard let response = stubResponse.response.toHTTPURLResponse() else { return }
+    setClient(response: response, dataToLoad: stubResponse.data)
   }
 
   /**
