@@ -104,3 +104,27 @@ struct TreeLogger: NetworkStubberLogProtocol {
 }
 NetworkStubber.setLogger(TreeLogger())
 ```
+
+## UI Tests:
+
+In a UI Test you can use the following helper method to geerate launch arguments:
+/// Adds stubs as launch arguments for UI tests:
+
+```swift
+/// - Parameter stubs: Array of `NetworkStub` objects
+public func setLaunchArgumentsForStubs(_ stubs: [NetworkStub]) {
+
+  let encoder = JSONEncoder()
+  encoder.outputFormatting = .prettyPrinted
+
+  guard
+    let encodedData = try? encoder.encode(stubs),
+    let jsonString = String(data: encodedData, encoding: .utf8)
+  else {
+    XCTFail("Failed to encode stubs into JSON string")
+    return
+  }
+
+  app.launchArguments.append(contentsOf: ["-NetworkStubs", jsonString])
+}
+```
