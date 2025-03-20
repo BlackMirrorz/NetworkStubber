@@ -1,4 +1,4 @@
-# Network Stubber
+<img src="Media/netwworkStubberLogo.png" alt="iOS Swift URLSessionProtocol Mocking Package" width="857" height="603" />
 
 A simple wrapper around URLProtocol that allows you to intercept and stub URLSession network requests in Swift by:
 1. Simulating network failures.
