@@ -7,45 +7,45 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A76685172D8C22BB0097899A /* NetworkStubberPackage in Frameworks */ = {isa = PBXBuildFile; productRef = A76685162D8C22BB0097899A /* NetworkStubberPackage */; };
-		A76685392D8C28D20097899A /* NetworkStubberPackage in Frameworks */ = {isa = PBXBuildFile; productRef = A76685382D8C28D20097899A /* NetworkStubberPackage */; };
+		A7DA5CA42D8C2CEA002294B4 /* NetworkStubberPackage in Frameworks */ = {isa = PBXBuildFile; productRef = A7DA5CA32D8C2CEA002294B4 /* NetworkStubberPackage */; };
+		A7DA5CA72D8C2D58002294B4 /* NetworkStubberPackage in Frameworks */ = {isa = PBXBuildFile; productRef = A7DA5CA62D8C2D58002294B4 /* NetworkStubberPackage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		A76DDF632D8C1FFD0075B1B2 /* PBXContainerItemProxy */ = {
+		A7DA5C862D8C2C9C002294B4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = A76DDF492D8C1FFB0075B1B2 /* Project object */;
+			containerPortal = A7DA5C6C2D8C2C9B002294B4 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = A76DDF502D8C1FFB0075B1B2;
+			remoteGlobalIDString = A7DA5C732D8C2C9B002294B4;
 			remoteInfo = NetworkStubberDemo;
 		};
-		A76DDF6D2D8C1FFD0075B1B2 /* PBXContainerItemProxy */ = {
+		A7DA5C902D8C2C9C002294B4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = A76DDF492D8C1FFB0075B1B2 /* Project object */;
+			containerPortal = A7DA5C6C2D8C2C9B002294B4 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = A76DDF502D8C1FFB0075B1B2;
+			remoteGlobalIDString = A7DA5C732D8C2C9B002294B4;
 			remoteInfo = NetworkStubberDemo;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		A76DDF512D8C1FFB0075B1B2 /* NetworkStubberDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetworkStubberDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A76DDF622D8C1FFD0075B1B2 /* NetworkStubberDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkStubberDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		A76DDF6C2D8C1FFD0075B1B2 /* NetworkStubberDemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkStubberDemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A7DA5C742D8C2C9B002294B4 /* NetworkStubberDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetworkStubberDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A7DA5C852D8C2C9C002294B4 /* NetworkStubberDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkStubberDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A7DA5C8F2D8C2C9C002294B4 /* NetworkStubberDemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkStubberDemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		A76DDF532D8C1FFB0075B1B2 /* NetworkStubberDemo */ = {
+		A7DA5C762D8C2C9B002294B4 /* NetworkStubberDemo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = NetworkStubberDemo;
 			sourceTree = "<group>";
 		};
-		A76DDF652D8C1FFD0075B1B2 /* NetworkStubberDemoTests */ = {
+		A7DA5C882D8C2C9C002294B4 /* NetworkStubberDemoTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = NetworkStubberDemoTests;
 			sourceTree = "<group>";
 		};
-		A76DDF6F2D8C1FFD0075B1B2 /* NetworkStubberDemoUITests */ = {
+		A7DA5C922D8C2C9C002294B4 /* NetworkStubberDemoUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = NetworkStubberDemoUITests;
 			sourceTree = "<group>";
@@ -53,196 +53,196 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		A76DDF4E2D8C1FFB0075B1B2 /* Frameworks */ = {
+		A7DA5C712D8C2C9B002294B4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A76685392D8C28D20097899A /* NetworkStubberPackage in Frameworks */,
-				A76685172D8C22BB0097899A /* NetworkStubberPackage in Frameworks */,
+				A7DA5CA42D8C2CEA002294B4 /* NetworkStubberPackage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A76DDF5F2D8C1FFD0075B1B2 /* Frameworks */ = {
+		A7DA5C822D8C2C9C002294B4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A76DDF692D8C1FFD0075B1B2 /* Frameworks */ = {
+		A7DA5C8C2D8C2C9C002294B4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A7DA5CA72D8C2D58002294B4 /* NetworkStubberPackage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A76685122D8C22300097899A /* Frameworks */ = {
+		A7DA5C6B2D8C2C9B002294B4 = {
+			isa = PBXGroup;
+			children = (
+				A7DA5C762D8C2C9B002294B4 /* NetworkStubberDemo */,
+				A7DA5C882D8C2C9C002294B4 /* NetworkStubberDemoTests */,
+				A7DA5C922D8C2C9C002294B4 /* NetworkStubberDemoUITests */,
+				A7DA5CA52D8C2D58002294B4 /* Frameworks */,
+				A7DA5C752D8C2C9B002294B4 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A7DA5C752D8C2C9B002294B4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A7DA5C742D8C2C9B002294B4 /* NetworkStubberDemo.app */,
+				A7DA5C852D8C2C9C002294B4 /* NetworkStubberDemoTests.xctest */,
+				A7DA5C8F2D8C2C9C002294B4 /* NetworkStubberDemoUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A7DA5CA52D8C2D58002294B4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		A76DDF482D8C1FFB0075B1B2 = {
-			isa = PBXGroup;
-			children = (
-				A76DDF532D8C1FFB0075B1B2 /* NetworkStubberDemo */,
-				A76DDF652D8C1FFD0075B1B2 /* NetworkStubberDemoTests */,
-				A76DDF6F2D8C1FFD0075B1B2 /* NetworkStubberDemoUITests */,
-				A76685122D8C22300097899A /* Frameworks */,
-				A76DDF522D8C1FFB0075B1B2 /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		A76DDF522D8C1FFB0075B1B2 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				A76DDF512D8C1FFB0075B1B2 /* NetworkStubberDemo.app */,
-				A76DDF622D8C1FFD0075B1B2 /* NetworkStubberDemoTests.xctest */,
-				A76DDF6C2D8C1FFD0075B1B2 /* NetworkStubberDemoUITests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A76DDF502D8C1FFB0075B1B2 /* NetworkStubberDemo */ = {
+		A7DA5C732D8C2C9B002294B4 /* NetworkStubberDemo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A76DDF762D8C1FFD0075B1B2 /* Build configuration list for PBXNativeTarget "NetworkStubberDemo" */;
+			buildConfigurationList = A7DA5C992D8C2C9C002294B4 /* Build configuration list for PBXNativeTarget "NetworkStubberDemo" */;
 			buildPhases = (
-				A76DDF4D2D8C1FFB0075B1B2 /* Sources */,
-				A76DDF4E2D8C1FFB0075B1B2 /* Frameworks */,
-				A76DDF4F2D8C1FFB0075B1B2 /* Resources */,
+				A7DA5C702D8C2C9B002294B4 /* Sources */,
+				A7DA5C712D8C2C9B002294B4 /* Frameworks */,
+				A7DA5C722D8C2C9B002294B4 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				A76DDF532D8C1FFB0075B1B2 /* NetworkStubberDemo */,
+				A7DA5C762D8C2C9B002294B4 /* NetworkStubberDemo */,
 			);
 			name = NetworkStubberDemo;
 			packageProductDependencies = (
-				A76685162D8C22BB0097899A /* NetworkStubberPackage */,
-				A76685382D8C28D20097899A /* NetworkStubberPackage */,
+				A7DA5CA32D8C2CEA002294B4 /* NetworkStubberPackage */,
 			);
 			productName = NetworkStubberDemo;
-			productReference = A76DDF512D8C1FFB0075B1B2 /* NetworkStubberDemo.app */;
+			productReference = A7DA5C742D8C2C9B002294B4 /* NetworkStubberDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
-		A76DDF612D8C1FFD0075B1B2 /* NetworkStubberDemoTests */ = {
+		A7DA5C842D8C2C9C002294B4 /* NetworkStubberDemoTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A76DDF792D8C1FFD0075B1B2 /* Build configuration list for PBXNativeTarget "NetworkStubberDemoTests" */;
+			buildConfigurationList = A7DA5C9C2D8C2C9C002294B4 /* Build configuration list for PBXNativeTarget "NetworkStubberDemoTests" */;
 			buildPhases = (
-				A76DDF5E2D8C1FFD0075B1B2 /* Sources */,
-				A76DDF5F2D8C1FFD0075B1B2 /* Frameworks */,
-				A76DDF602D8C1FFD0075B1B2 /* Resources */,
+				A7DA5C812D8C2C9C002294B4 /* Sources */,
+				A7DA5C822D8C2C9C002294B4 /* Frameworks */,
+				A7DA5C832D8C2C9C002294B4 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				A76DDF642D8C1FFD0075B1B2 /* PBXTargetDependency */,
+				A7DA5C872D8C2C9C002294B4 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				A76DDF652D8C1FFD0075B1B2 /* NetworkStubberDemoTests */,
+				A7DA5C882D8C2C9C002294B4 /* NetworkStubberDemoTests */,
 			);
 			name = NetworkStubberDemoTests;
 			packageProductDependencies = (
 			);
 			productName = NetworkStubberDemoTests;
-			productReference = A76DDF622D8C1FFD0075B1B2 /* NetworkStubberDemoTests.xctest */;
+			productReference = A7DA5C852D8C2C9C002294B4 /* NetworkStubberDemoTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		A76DDF6B2D8C1FFD0075B1B2 /* NetworkStubberDemoUITests */ = {
+		A7DA5C8E2D8C2C9C002294B4 /* NetworkStubberDemoUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A76DDF7C2D8C1FFD0075B1B2 /* Build configuration list for PBXNativeTarget "NetworkStubberDemoUITests" */;
+			buildConfigurationList = A7DA5C9F2D8C2C9C002294B4 /* Build configuration list for PBXNativeTarget "NetworkStubberDemoUITests" */;
 			buildPhases = (
-				A76DDF682D8C1FFD0075B1B2 /* Sources */,
-				A76DDF692D8C1FFD0075B1B2 /* Frameworks */,
-				A76DDF6A2D8C1FFD0075B1B2 /* Resources */,
+				A7DA5C8B2D8C2C9C002294B4 /* Sources */,
+				A7DA5C8C2D8C2C9C002294B4 /* Frameworks */,
+				A7DA5C8D2D8C2C9C002294B4 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				A76DDF6E2D8C1FFD0075B1B2 /* PBXTargetDependency */,
+				A7DA5C912D8C2C9C002294B4 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				A76DDF6F2D8C1FFD0075B1B2 /* NetworkStubberDemoUITests */,
+				A7DA5C922D8C2C9C002294B4 /* NetworkStubberDemoUITests */,
 			);
 			name = NetworkStubberDemoUITests;
 			packageProductDependencies = (
+				A7DA5CA62D8C2D58002294B4 /* NetworkStubberPackage */,
 			);
 			productName = NetworkStubberDemoUITests;
-			productReference = A76DDF6C2D8C1FFD0075B1B2 /* NetworkStubberDemoUITests.xctest */;
+			productReference = A7DA5C8F2D8C2C9C002294B4 /* NetworkStubberDemoUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		A76DDF492D8C1FFB0075B1B2 /* Project object */ = {
+		A7DA5C6C2D8C2C9B002294B4 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
-					A76DDF502D8C1FFB0075B1B2 = {
+					A7DA5C732D8C2C9B002294B4 = {
 						CreatedOnToolsVersion = 16.2;
 					};
-					A76DDF612D8C1FFD0075B1B2 = {
+					A7DA5C842D8C2C9C002294B4 = {
 						CreatedOnToolsVersion = 16.2;
-						TestTargetID = A76DDF502D8C1FFB0075B1B2;
+						TestTargetID = A7DA5C732D8C2C9B002294B4;
 					};
-					A76DDF6B2D8C1FFD0075B1B2 = {
+					A7DA5C8E2D8C2C9C002294B4 = {
 						CreatedOnToolsVersion = 16.2;
-						TestTargetID = A76DDF502D8C1FFB0075B1B2;
+						TestTargetID = A7DA5C732D8C2C9B002294B4;
 					};
 				};
 			};
-			buildConfigurationList = A76DDF4C2D8C1FFB0075B1B2 /* Build configuration list for PBXProject "NetworkStubberDemo" */;
+			buildConfigurationList = A7DA5C6F2D8C2C9B002294B4 /* Build configuration list for PBXProject "NetworkStubberDemo" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = A76DDF482D8C1FFB0075B1B2;
+			mainGroup = A7DA5C6B2D8C2C9B002294B4;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				A76685372D8C28D20097899A /* XCRemoteSwiftPackageReference "NetworkStubber" */,
+				A7DA5CA22D8C2CEA002294B4 /* XCRemoteSwiftPackageReference "NetworkStubber" */,
 			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = A76DDF522D8C1FFB0075B1B2 /* Products */;
+			productRefGroup = A7DA5C752D8C2C9B002294B4 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A76DDF502D8C1FFB0075B1B2 /* NetworkStubberDemo */,
-				A76DDF612D8C1FFD0075B1B2 /* NetworkStubberDemoTests */,
-				A76DDF6B2D8C1FFD0075B1B2 /* NetworkStubberDemoUITests */,
+				A7DA5C732D8C2C9B002294B4 /* NetworkStubberDemo */,
+				A7DA5C842D8C2C9C002294B4 /* NetworkStubberDemoTests */,
+				A7DA5C8E2D8C2C9C002294B4 /* NetworkStubberDemoUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		A76DDF4F2D8C1FFB0075B1B2 /* Resources */ = {
+		A7DA5C722D8C2C9B002294B4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A76DDF602D8C1FFD0075B1B2 /* Resources */ = {
+		A7DA5C832D8C2C9C002294B4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A76DDF6A2D8C1FFD0075B1B2 /* Resources */ = {
+		A7DA5C8D2D8C2C9C002294B4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -252,21 +252,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		A76DDF4D2D8C1FFB0075B1B2 /* Sources */ = {
+		A7DA5C702D8C2C9B002294B4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A76DDF5E2D8C1FFD0075B1B2 /* Sources */ = {
+		A7DA5C812D8C2C9C002294B4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A76DDF682D8C1FFD0075B1B2 /* Sources */ = {
+		A7DA5C8B2D8C2C9C002294B4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -276,20 +276,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		A76DDF642D8C1FFD0075B1B2 /* PBXTargetDependency */ = {
+		A7DA5C872D8C2C9C002294B4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A76DDF502D8C1FFB0075B1B2 /* NetworkStubberDemo */;
-			targetProxy = A76DDF632D8C1FFD0075B1B2 /* PBXContainerItemProxy */;
+			target = A7DA5C732D8C2C9B002294B4 /* NetworkStubberDemo */;
+			targetProxy = A7DA5C862D8C2C9C002294B4 /* PBXContainerItemProxy */;
 		};
-		A76DDF6E2D8C1FFD0075B1B2 /* PBXTargetDependency */ = {
+		A7DA5C912D8C2C9C002294B4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A76DDF502D8C1FFB0075B1B2 /* NetworkStubberDemo */;
-			targetProxy = A76DDF6D2D8C1FFD0075B1B2 /* PBXContainerItemProxy */;
+			target = A7DA5C732D8C2C9B002294B4 /* NetworkStubberDemo */;
+			targetProxy = A7DA5C902D8C2C9C002294B4 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		A76DDF742D8C1FFD0075B1B2 /* Debug */ = {
+		A7DA5C972D8C2C9C002294B4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -326,6 +326,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_TESTING_SEARCH_PATHS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -350,7 +351,7 @@
 			};
 			name = Debug;
 		};
-		A76DDF752D8C1FFD0075B1B2 /* Release */ = {
+		A7DA5C982D8C2C9C002294B4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -387,6 +388,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTING_SEARCH_PATHS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -403,7 +405,7 @@
 			};
 			name = Release;
 		};
-		A76DDF772D8C1FFD0075B1B2 /* Debug */ = {
+		A7DA5C9A2D8C2C9C002294B4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -415,8 +417,6 @@
 				DEVELOPMENT_TEAM = YY5Y5N88U4;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_TESTING_SEARCH_PATHS = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -428,7 +428,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.2;
@@ -436,16 +436,15 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "co.uk.blackMirrorz-stubber.NetworkStubberDemo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 2.2;
 			};
 			name = Debug;
 		};
-		A76DDF782D8C1FFD0075B1B2 /* Release */ = {
+		A7DA5C9B2D8C2C9C002294B4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -457,8 +456,6 @@
 				DEVELOPMENT_TEAM = YY5Y5N88U4;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_TESTING_SEARCH_PATHS = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -470,7 +467,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.2;
@@ -478,16 +475,15 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "co.uk.blackMirrorz-stubber.NetworkStubberDemo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 2.2;
 			};
 			name = Release;
 		};
-		A76DDF7A2D8C1FFD0075B1B2 /* Debug */ = {
+		A7DA5C9D2D8C2C9C002294B4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -495,23 +491,22 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = YY5Y5N88U4;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
 				MACOSX_DEPLOYMENT_TARGET = 15.2;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "co.uk.blackMirrorz-stubber.NetworkStubberDemoTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NetworkStubberDemo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/NetworkStubberDemo";
 				XROS_DEPLOYMENT_TARGET = 2.2;
 			};
 			name = Debug;
 		};
-		A76DDF7B2D8C1FFD0075B1B2 /* Release */ = {
+		A7DA5C9E2D8C2C9C002294B4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -519,63 +514,60 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = YY5Y5N88U4;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
 				MACOSX_DEPLOYMENT_TARGET = 15.2;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "co.uk.blackMirrorz-stubber.NetworkStubberDemoTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NetworkStubberDemo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/NetworkStubberDemo";
 				XROS_DEPLOYMENT_TARGET = 2.2;
 			};
 			name = Release;
 		};
-		A76DDF7D2D8C1FFD0075B1B2 /* Debug */ = {
+		A7DA5CA02D8C2C9C002294B4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = YY5Y5N88U4;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
 				MACOSX_DEPLOYMENT_TARGET = 15.2;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "co.uk.blackMirrorz-stubber.NetworkStubberDemoUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_TARGET_NAME = NetworkStubberDemo;
 				XROS_DEPLOYMENT_TARGET = 2.2;
 			};
 			name = Debug;
 		};
-		A76DDF7E2D8C1FFD0075B1B2 /* Release */ = {
+		A7DA5CA12D8C2C9C002294B4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = YY5Y5N88U4;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
 				MACOSX_DEPLOYMENT_TARGET = 15.2;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "co.uk.blackMirrorz-stubber.NetworkStubberDemoUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_TARGET_NAME = NetworkStubberDemo;
 				XROS_DEPLOYMENT_TARGET = 2.2;
 			};
@@ -584,38 +576,38 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A76DDF4C2D8C1FFB0075B1B2 /* Build configuration list for PBXProject "NetworkStubberDemo" */ = {
+		A7DA5C6F2D8C2C9B002294B4 /* Build configuration list for PBXProject "NetworkStubberDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A76DDF742D8C1FFD0075B1B2 /* Debug */,
-				A76DDF752D8C1FFD0075B1B2 /* Release */,
+				A7DA5C972D8C2C9C002294B4 /* Debug */,
+				A7DA5C982D8C2C9C002294B4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A76DDF762D8C1FFD0075B1B2 /* Build configuration list for PBXNativeTarget "NetworkStubberDemo" */ = {
+		A7DA5C992D8C2C9C002294B4 /* Build configuration list for PBXNativeTarget "NetworkStubberDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A76DDF772D8C1FFD0075B1B2 /* Debug */,
-				A76DDF782D8C1FFD0075B1B2 /* Release */,
+				A7DA5C9A2D8C2C9C002294B4 /* Debug */,
+				A7DA5C9B2D8C2C9C002294B4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A76DDF792D8C1FFD0075B1B2 /* Build configuration list for PBXNativeTarget "NetworkStubberDemoTests" */ = {
+		A7DA5C9C2D8C2C9C002294B4 /* Build configuration list for PBXNativeTarget "NetworkStubberDemoTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A76DDF7A2D8C1FFD0075B1B2 /* Debug */,
-				A76DDF7B2D8C1FFD0075B1B2 /* Release */,
+				A7DA5C9D2D8C2C9C002294B4 /* Debug */,
+				A7DA5C9E2D8C2C9C002294B4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A76DDF7C2D8C1FFD0075B1B2 /* Build configuration list for PBXNativeTarget "NetworkStubberDemoUITests" */ = {
+		A7DA5C9F2D8C2C9C002294B4 /* Build configuration list for PBXNativeTarget "NetworkStubberDemoUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A76DDF7D2D8C1FFD0075B1B2 /* Debug */,
-				A76DDF7E2D8C1FFD0075B1B2 /* Release */,
+				A7DA5CA02D8C2C9C002294B4 /* Debug */,
+				A7DA5CA12D8C2C9C002294B4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -623,7 +615,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		A76685372D8C28D20097899A /* XCRemoteSwiftPackageReference "NetworkStubber" */ = {
+		A7DA5CA22D8C2CEA002294B4 /* XCRemoteSwiftPackageReference "NetworkStubber" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/BlackMirrorz/NetworkStubber";
 			requirement = {
@@ -634,16 +626,17 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		A76685162D8C22BB0097899A /* NetworkStubberPackage */ = {
+		A7DA5CA32D8C2CEA002294B4 /* NetworkStubberPackage */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = A7DA5CA22D8C2CEA002294B4 /* XCRemoteSwiftPackageReference "NetworkStubber" */;
 			productName = NetworkStubberPackage;
 		};
-		A76685382D8C28D20097899A /* NetworkStubberPackage */ = {
+		A7DA5CA62D8C2D58002294B4 /* NetworkStubberPackage */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = A76685372D8C28D20097899A /* XCRemoteSwiftPackageReference "NetworkStubber" */;
+			package = A7DA5CA22D8C2CEA002294B4 /* XCRemoteSwiftPackageReference "NetworkStubber" */;
 			productName = NetworkStubberPackage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
-	rootObject = A76DDF492D8C1FFB0075B1B2 /* Project object */;
+	rootObject = A7DA5C6C2D8C2C9B002294B4 /* Project object */;
 }
