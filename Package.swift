@@ -3,20 +3,20 @@
 import PackageDescription
 
 let package = Package(
-  name: "NetworkStubber",
+  name: "NetworkStubberPackage",
   platforms: [.iOS(.v16)],
   products: [
     .library(
-      name: "NetworkStubber",
-      targets: ["NetworkStubber"]
+      name: "NetworkStubberPackage",
+      targets: ["NetworkStubberPackage"]
     )
   ],
   targets: [
     .target(
-      name: "NetworkStubber"),
+      name: "NetworkStubberPackage"),
     .testTarget(
-      name: "NetworkStubberTests",
-      dependencies: ["NetworkStubber"]
+      name: "NetworkStubberPackageTests",
+      dependencies: ["NetworkStubberPackage"]
     )
   ]
 )
