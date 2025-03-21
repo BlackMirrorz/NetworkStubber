@@ -1,4 +1,4 @@
-<img src="Media/netwworkStubberLogo.png" alt="iOS Swift URLSessionProtocol Mocking Package" width="427.5" height="301.5" />
+<img src="Media/netwworkStubberLogo.png" alt="iOS Swift URLSessionProtocol Mocking Package" width="299.95" height="211.05" />
 
 A simple wrapper around URLProtocol that allows you to intercept and stub URLSession network requests in Swift by:
 1. Simulating network failures.
@@ -107,24 +107,49 @@ NetworkStubber.setLogger(TreeLogger())
 
 ## UI Tests:
 
-In a UI Test you can use the following helper method to geerate launch arguments:
-/// Adds stubs as launch arguments for UI tests:
+### Setting Launch Arguments For Stubs
+
+In a UI Test you can use the following helper method to generate NetworkStubs. An example of this can be seen in the DemoProjectUITest file.
 
 ```swift
+/// Adds stubs as launch arguments for UI tests
 /// - Parameter stubs: Array of `NetworkStub` objects
 public func setLaunchArgumentsForStubs(_ stubs: [NetworkStub]) {
-
   let encoder = JSONEncoder()
   encoder.outputFormatting = .prettyPrinted
 
-  guard
-    let encodedData = try? encoder.encode(stubs),
-    let jsonString = String(data: encodedData, encoding: .utf8)
-  else {
-    XCTFail("Failed to encode stubs into JSON string")
-    return
+  do {
+    let encodedData = try encoder.encode(stubs)
+    let base64String = encodedData.base64EncodedString()
+    app.launchArguments.append(contentsOf: ["-NetworkStubs", base64String])
+  } catch {
+    XCTFail("Failed to encode JSON for stubs: \(error)")
   }
+}
+```
+You can also use the function above and copy them directly into your App Scheme e.g:
 
-  app.launchArguments.append(contentsOf: ["-NetworkStubs", jsonString])
+<img src="Media/launchArguments.png" alt="iOS Swift URLSessionProtocol Mocking Package" width="276.6" height="148.5" />
+
+### Handling Launch Arguments:
+
+NetworkStubber comes with a convenience processor which can convert the launchArguments into NetworkStubs:
+
+```swift
+import NetworkStubberPackage
+import SwiftUI
+
+@main
+struct NetworkStubberDemoApp: App {
+
+  // MARK: - Body
+
+  var body: some Scene {
+    WindowGroup {
+      ContentView().onAppear {
+        NetworkStubLaunchArgumentProcessor.processLaunchArgumentsForStubs()
+      }
+    }
+  }
 }
 ```

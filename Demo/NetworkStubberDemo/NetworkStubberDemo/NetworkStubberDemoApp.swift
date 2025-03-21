@@ -5,13 +5,19 @@
 //  Created by Josh Robbins on 3/20/25.
 //
 
+import NetworkStubberPackage
 import SwiftUI
 
 @main
 struct NetworkStubberDemoApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
+
+  // MARK: - Body
+
+  var body: some Scene {
+    WindowGroup {
+      ContentView().onAppear {
+        NetworkStubLaunchArgumentProcessor.processLaunchArgumentsForStubs()
+      }
     }
+  }
 }

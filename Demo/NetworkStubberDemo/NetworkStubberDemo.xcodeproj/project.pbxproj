@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A7DA5CA42D8C2CEA002294B4 /* NetworkStubberPackage in Frameworks */ = {isa = PBXBuildFile; productRef = A7DA5CA32D8C2CEA002294B4 /* NetworkStubberPackage */; };
-		A7DA5CA72D8C2D58002294B4 /* NetworkStubberPackage in Frameworks */ = {isa = PBXBuildFile; productRef = A7DA5CA62D8C2D58002294B4 /* NetworkStubberPackage */; };
+		A70A58D72D8CE17C00256306 /* NetworkStubberPackage in Frameworks */ = {isa = PBXBuildFile; productRef = A70A58D62D8CE17C00256306 /* NetworkStubberPackage */; };
+		A70A58D92D8CE18100256306 /* NetworkStubberPackage in Frameworks */ = {isa = PBXBuildFile; productRef = A70A58D82D8CE18100256306 /* NetworkStubberPackage */; };
+		A7D641482D8CE0F500742E6C /* NetworkStubberPackage in Frameworks */ = {isa = PBXBuildFile; productRef = A7D641472D8CE0F500742E6C /* NetworkStubberPackage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,7 +58,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A7DA5CA42D8C2CEA002294B4 /* NetworkStubberPackage in Frameworks */,
+				A70A58D72D8CE17C00256306 /* NetworkStubberPackage in Frameworks */,
+				A7D641482D8CE0F500742E6C /* NetworkStubberPackage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,7 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A7DA5CA72D8C2D58002294B4 /* NetworkStubberPackage in Frameworks */,
+				A70A58D92D8CE18100256306 /* NetworkStubberPackage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,7 +129,8 @@
 			);
 			name = NetworkStubberDemo;
 			packageProductDependencies = (
-				A7DA5CA32D8C2CEA002294B4 /* NetworkStubberPackage */,
+				A7D641472D8CE0F500742E6C /* NetworkStubberPackage */,
+				A70A58D62D8CE17C00256306 /* NetworkStubberPackage */,
 			);
 			productName = NetworkStubberDemo;
 			productReference = A7DA5C742D8C2C9B002294B4 /* NetworkStubberDemo.app */;
@@ -174,7 +177,7 @@
 			);
 			name = NetworkStubberDemoUITests;
 			packageProductDependencies = (
-				A7DA5CA62D8C2D58002294B4 /* NetworkStubberPackage */,
+				A70A58D82D8CE18100256306 /* NetworkStubberPackage */,
 			);
 			productName = NetworkStubberDemoUITests;
 			productReference = A7DA5C8F2D8C2C9C002294B4 /* NetworkStubberDemoUITests.xctest */;
@@ -213,7 +216,7 @@
 			mainGroup = A7DA5C6B2D8C2C9B002294B4;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				A7DA5CA22D8C2CEA002294B4 /* XCRemoteSwiftPackageReference "NetworkStubber" */,
+				A70A58D52D8CE17C00256306 /* XCLocalSwiftPackageReference "../../../NetworkStubberPackage" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A7DA5C752D8C2C9B002294B4 /* Products */;
@@ -614,26 +617,25 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		A7DA5CA22D8C2CEA002294B4 /* XCRemoteSwiftPackageReference "NetworkStubber" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/BlackMirrorz/NetworkStubber";
-			requirement = {
-				branch = feature/UITestHelpers;
-				kind = branch;
-			};
+/* Begin XCLocalSwiftPackageReference section */
+		A70A58D52D8CE17C00256306 /* XCLocalSwiftPackageReference "../../../NetworkStubberPackage" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../../NetworkStubberPackage;
 		};
-/* End XCRemoteSwiftPackageReference section */
+/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		A7DA5CA32D8C2CEA002294B4 /* NetworkStubberPackage */ = {
+		A70A58D62D8CE17C00256306 /* NetworkStubberPackage */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = A7DA5CA22D8C2CEA002294B4 /* XCRemoteSwiftPackageReference "NetworkStubber" */;
 			productName = NetworkStubberPackage;
 		};
-		A7DA5CA62D8C2D58002294B4 /* NetworkStubberPackage */ = {
+		A70A58D82D8CE18100256306 /* NetworkStubberPackage */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = A7DA5CA22D8C2CEA002294B4 /* XCRemoteSwiftPackageReference "NetworkStubber" */;
+			package = A70A58D52D8CE17C00256306 /* XCLocalSwiftPackageReference "../../../NetworkStubberPackage" */;
+			productName = NetworkStubberPackage;
+		};
+		A7D641472D8CE0F500742E6C /* NetworkStubberPackage */ = {
+			isa = XCSwiftPackageProductDependency;
 			productName = NetworkStubberPackage;
 		};
 /* End XCSwiftPackageProductDependency section */

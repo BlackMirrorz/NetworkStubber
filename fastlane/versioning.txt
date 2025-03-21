@@ -1,6 +1,7 @@
-VERSION=1.0.3
+VERSION=1.0.4
 BUILD=1
 
 RELEASENOTES:
 Update examples to process Launch Arguments.
+Update Documentation.
 Latest Release.
