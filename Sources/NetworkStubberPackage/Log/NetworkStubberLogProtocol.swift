@@ -9,9 +9,7 @@ import OSLog
 
 /**
  A protocol for handling log messages in `NetworkStubber`.
- This allows the `NetworkStubber` class to log messages using any logging mechanism, such as `OSLog`, console printing, or a remote logging service.
  */
-
 public protocol NetworkStubberLogProtocol: Sendable {
   func logMessage(_ message: String)
 }
@@ -21,11 +19,16 @@ public protocol NetworkStubberLogProtocol: Sendable {
 /**
  Provides default logging using `OSLog`.
  */
-struct NetworkStubLogger: NetworkStubberLogProtocol {
+public struct NetworkStubLogger: NetworkStubberLogProtocol {
 
   private let logger = Logger(subsystem: "networkStubber", category: "networkStubs")
 
-  func logMessage(_ message: String) {
+  public init() {}
+  public func logMessage(_ message: String) {
+    #if DEBUG
+    print(message)
+    #else
     logger.info("\(message, privacy: .public)")
+    #endif
   }
 }

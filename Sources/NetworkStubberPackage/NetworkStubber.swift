@@ -12,16 +12,18 @@ import Foundation
  */
 public class NetworkStubber: URLProtocol {
 
-  private static var stubStore: [URL: NetworkStub] = [:]
+  private static var stubStore: [NetworkStub] = []
   private static var logger: NetworkStubberLogProtocol?
 
   /**
    Determines whether this protocol can handle the given request.
    */
   override public class func canInit(with request: URLRequest) -> Bool {
-    guard let url = request.url else { return false }
-    let stubExists = stubStore.stub(for: url) != nil
-    return stubExists
+    let host = request.url?.host ?? "nil"
+    return stubStore.contains { stub in
+      let result = stub.predicate.evaluate(request)
+      return result
+    }
   }
 
   /**
@@ -33,14 +35,14 @@ public class NetworkStubber: URLProtocol {
    Starts loading the request.
    */
   override public func startLoading() {
-
     guard
       let url = request.url,
-      let store = NetworkStubber.stubStore.stub(for: url)
+      let store = NetworkStubber.stubStore.first(where: { $0.predicate.evaluate(request) })
     else {
       NetworkStubber.logger?.logMessage(
         "❌ Failed to stub request for \(String(describing: request.url))"
       )
+      handleStubError(NetworkStubberInternalError.invalidURL)
       return
     }
 
@@ -51,16 +53,16 @@ public class NetworkStubber: URLProtocol {
       guard let error = store.error else { return }
       handleStubError(error.toNSError())
     case .data:
-      guard let dataStub = store.data, let response = dataStub.httpURLResponse(url: url) else { return }
+      guard
+        let dataStub = store.data,
+        let response = dataStub.httpURLResponse(url: url)
+      else {
+        return
+      }
       handleStubData(dataStub, response: response, url: url)
     case .response:
       guard let stubResponse = store.response else { return }
       handleStubResponse(stubResponse, url: url)
-    case .empty:
-      NetworkStubber.logger?.logMessage(
-        "⚠️ Stub is empty for \(url), returning without modification"
-      )
-      client?.urlProtocolDidFinishLoading(self)
     }
 
     NetworkStubber.logger?.logMessage(
@@ -80,15 +82,24 @@ extension NetworkStubber {
 
   /// Adds a single network stub to the stub store.
   /// - Parameter stub: The `NetworkStub` instance to be added.
-  public static func add(_ stub: NetworkStub) {
-    stubStore[stub.url] = stub
-    logger?.logMessage("✅ URL: \(stub.url) added to NetworkStubber")
+  public static func add(_ stub: NetworkStub?) {
+    guard
+      let stub = stub
+    else {
+      logger?.logMessage("⚠️ Skipped adding nil NetworkStub.")
+      return
+    }
+
+    stubStore.append(stub)
+    logger?.logMessage("✅ Predicate added to NetworkStubber: \(stub.predicate.description)")
   }
 
   /// Adds multiple network stubs to the stub store.
   /// - Parameter stubs: An array of `NetworkStub` instances to be added.
-  public static func addStubs(_ stubs: [NetworkStub]) {
-    stubs.forEach { add($0) }
+  public static func addStubs(_ stubs: [NetworkStub?]) {
+    for stub in stubs {
+      add(stub)
+    }
   }
 
   /// Sets a custom logger for the `NetworkStubber`.
@@ -117,15 +128,11 @@ extension NetworkStubber {
   }
 
   /**
-   Handles a stubbed response containing **only data** (without HTTP headers).
-
-   This function logs the response and sends it to the client, determining if the data is
-   from a `Codable` object or raw `Data`.
-
+   Handles a stubbed response containing **only data** (without HTTP headers)..
    - Parameters:
-   - dataStub: The stubbed data response, including HTTP status code.
-   - response: The automatically generated `HTTPURLResponse` associated with the data.
-   - url: The URL that was stubbed.
+     - dataStub: The stubbed data response, including HTTP status code.
+     - response: The automatically generated `HTTPURLResponse` associated with the data.
+     - url: The URL that was stubbed.
    */
   private func handleStubData(_ dataStub: NetworkStubDataItem, response: HTTPURLResponse, url: URL) {
     let logMessage = dataStub.isCodable
@@ -139,22 +146,27 @@ extension NetworkStubber {
   /**
    Handles a full HTTP response stub, including headers, status code, and body.
    - Parameters:
-   - stubResponse: The full `NetworkStubResponseItem`, containing an `HTTPURLResponse` and data.
-   - url: The URL that was stubbed.
+     - stubResponse: The full `NetworkStubResponseItem`, containing an `HTTPURLResponse` and data.
+     - url: The URL that was stubbed.
    */
   private func handleStubResponse(_ stubResponse: NetworkStubResponseItem, url: URL) {
+    guard
+      let httpResponse = stubResponse.response.toHTTPURLResponse()
+    else {
+      NetworkStubber.logger?.logMessage("❌ Failed to convert stored response to HTTPURLResponse for \(url)")
+      client?.urlProtocol(self, didFailWithError: NetworkStubberInternalError.failedToConvertStoredResponse(url))
+      return
+    }
+
     NetworkStubber.logger?.logMessage("📡 Stubbing response for \(url): \(stubResponse.debugString)")
-    guard let response = stubResponse.response.toHTTPURLResponse() else { return }
-    setClient(response: response, dataToLoad: stubResponse.data)
+    setClient(response: httpResponse, dataToLoad: stubResponse.data)
   }
 
   /**
    Sends the stubbed response and data back to the client.
-   This function is used by both `handleStubData(_:)` and `handleStubResponse(_:)` to pass the simulated response to the client.
-
    - Parameters:
-   - response: The `HTTPURLResponse` containing status code and headers.
-   - dataToLoad: The raw data payload to be sent in the response body.
+     - response: The `HTTPURLResponse` containing status code and headers.
+     - dataToLoad: The raw data payload to be sent in the response body.
    */
   private func setClient(response: HTTPURLResponse, dataToLoad: Data) {
     client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)

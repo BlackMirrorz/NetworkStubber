@@ -2,7 +2,7 @@
 //  NetworkStub.swift
 //  NetworkStubber
 //
-//  Created by Josh Robbins on 3/20/25.
+//  Created by Josh Robbins on 4/3/25.
 //
 
 import Foundation
@@ -14,8 +14,8 @@ import Foundation
  */
 protocol NetworkStubProtocol {
 
-  /// The URL that this stub applies to.
-  var url: URL { get }
+  /// The predicate that determines whether a request matches this stub.
+  var predicate: NetworkStubPredicate { get }
 
   /// An optional error to simulate a network failure.
   var error: NetworkStubError? { get }
@@ -36,8 +36,8 @@ protocol NetworkStubProtocol {
  */
 public struct NetworkStub: NetworkStubProtocol, Sendable, Codable {
 
-  /// The URL that this stub applies to.
-  let url: URL
+  /// The predicate that this stub applies to.
+  let predicate: NetworkStubPredicate
 
   /// An optional error to simulate a network failure.
   let error: NetworkStubError?
@@ -48,45 +48,51 @@ public struct NetworkStub: NetworkStubProtocol, Sendable, Codable {
   /// The full HTTP response including headers and body.
   let response: NetworkStubResponseItem?
 
-  /// The type of network stub (`error`, `data`, `response`, or `empty`).
+  /// The type of network stub (`error`, `data`, or `response`).
   let type: NetworkStubType
 
   // MARK: - Initialization
 
   /**
-   Initializes a `NetworkStub` with optional response data and an error.
+   Initializes a `NetworkStub` with exactly one stub type: an error, data item, or response.
+
+   If multiple values are passed (e.g., both `error` and `data`), the initializer will fail.
+   If all parameters are nil, the initializer will also fail.
 
    - Parameters:
-     - url: The URL to be stubbed.
-     - error: An optional `Error` to simulate a network failure.
-     - data: An optional `NetworkStubDataItem` for the response body and status code.
-     - response: An optional `NetworkStubResponseItem` for a full HTTP response.
+     - predicate: The predicate to match against incoming requests.
+     - error: An optional error to simulate.
+     - data: Optional data to return.
+     - response: Optional full response.
    */
-  public init(
-    url: URL,
+  public init?(
+    predicate: NetworkStubPredicate,
     error: Error? = nil,
     data: NetworkStubDataItem? = nil,
     response: NetworkStubResponseItem? = nil
   ) {
-    self.url = url
+    self.predicate = predicate
 
-    if let error {
-      self.error = NetworkStubError(from: error)
-    } else {
-      self.error = nil
-    }
-
-    self.data = data
-    self.response = response
-
-    if error != nil {
+    switch (error, response, data) {
+    case (let e?, nil, nil):
+      self.error = NetworkStubError(from: e)
+      self.response = nil
+      self.data = nil
       self.type = .error
-    } else if response != nil {
+
+    case (nil, let r?, nil):
+      self.response = r
+      self.error = nil
+      self.data = nil
       self.type = .response
-    } else if data != nil {
+
+    case (nil, nil, let d?):
+      self.data = d
+      self.error = nil
+      self.response = nil
       self.type = .data
-    } else {
-      self.type = .empty
+    default:
+      return nil
     }
   }
 }
@@ -94,42 +100,27 @@ public struct NetworkStub: NetworkStubProtocol, Sendable, Codable {
 // MARK: - NetworkStubDataItem
 
 /**
- A struct representing the body of a stubbed HTTP response.
+ Represents stubbed response body and status code, used in `.data` type stubs.
  */
 public struct NetworkStubDataItem: Sendable, Codable {
 
-  /// The HTTP status code of the response.
+  /// The HTTP status code to simulate.
   let statusCode: Int
 
-  /// The raw data to be returned as the response body.
+  /// The body of the stubbed response.
   let data: Data
 
-  /// Indicates whether the data was encoded from a `Codable` object.
+  /// Whether this item was created from a Codable object.
   let isCodable: Bool
 
-  // MARK: - Initialization
-
-  /**
-   Initializes a `NetworkStubDataItem` with raw data.
-
-   - Parameters:
-     - statusCode: The HTTP status code for the response.
-     - data: The response body in raw `Data` format.
-   */
+  /// Initializes a `NetworkStubDataItem` with raw data.
   public init(statusCode: Int, data: Data) {
     self.statusCode = statusCode
     self.data = data
     self.isCodable = false
   }
 
-  /**
-   Initializes a `NetworkStubDataItem` with a `Codable` object, encoding it as JSON.
-
-   - Parameters:
-     - statusCode: The HTTP status code for the response.
-     - codable: A `Codable` object that will be JSON-encoded into `Data`.
-   - Throws: An error if encoding fails.
-   */
+  /// Initializes a `NetworkStubDataItem` from a Codable object.
   public init<T: Codable>(statusCode: Int, codable: T) throws {
     self.statusCode = statusCode
     self.data = try JSONEncoder().encode(codable)
@@ -137,25 +128,14 @@ public struct NetworkStubDataItem: Sendable, Codable {
   }
 }
 
-// MARK: - NetworkStubDataItem + Helpers
-
 extension NetworkStubDataItem {
 
-  /**
-   Creates an `HTTPURLResponse` from the stored status code.
-
-   - Parameter url: The URL associated with the response.
-   - Returns: An optional `HTTPURLResponse` with the stored status code.
-   */
+  /// Generates a `HTTPURLResponse` from the given URL and status code.
   func httpURLResponse(url: URL) -> HTTPURLResponse? {
     HTTPURLResponse(url: url, statusCode: statusCode, httpVersion: nil, headerFields: nil)
   }
 
-  /**
-   Attempts to convert the response data into a readable `String`.
-
-   - Returns: A formatted `String` representation of the data if possible, otherwise `"Binary Data"`.
-   */
+  /// Debug-friendly representation of the body.
   var debugString: String {
     String(data: data, encoding: .utf8) ?? "Binary Data"
   }
@@ -164,42 +144,27 @@ extension NetworkStubDataItem {
 // MARK: - NetworkStubResponseItem
 
 /**
- A struct that combines an `HTTPURLResponse` with response data.
+ Represents a complete HTTP response, including headers and body.
  */
 public struct NetworkStubResponseItem: Sendable, Codable {
 
-  /// The HTTP response headers and status code.
+  /// The simulated HTTPURLResponse metadata (status code, headers, etc.)
   let response: NetworkStubHTTPURLResponse
 
-  /// The response body data.
+  /// The body of the response.
   let data: Data
 
-  /// Indicates whether the data was encoded from a `Codable` object.
+  /// Whether this response was created from a Codable object.
   let isCodable: Bool
 
-  // MARK: - Initialization
-
-  /**
-   Initializes a `NetworkStubResponseItem` with raw response data.
-
-   - Parameters:
-     - response: The `HTTPURLResponse` containing headers and status code.
-     - data: The response body in raw `Data` format.
-   */
+  /// Initializes a full response with raw data.
   public init(response: HTTPURLResponse, data: Data) {
     self.response = NetworkStubHTTPURLResponse(from: response)
     self.data = data
     self.isCodable = false
   }
 
-  /**
-   Initializes a `NetworkStubResponseItem` with a `Codable` object, encoding it as JSON.
-
-   - Parameters:
-     - response: The `HTTPURLResponse` containing headers and status code.
-     - codable: A `Codable` object that will be JSON-encoded into `Data`.
-   - Throws: An error if encoding fails.
-   */
+  /// Initializes a full response from a Codable object.
   public init<T: Codable>(response: HTTPURLResponse, codable: T) throws {
     self.response = NetworkStubHTTPURLResponse(from: response)
     self.data = try JSONEncoder().encode(codable)
@@ -207,15 +172,9 @@ public struct NetworkStubResponseItem: Sendable, Codable {
   }
 }
 
-// MARK: - NetworkStubResponseItem + Helpers
-
 extension NetworkStubResponseItem {
 
-  /**
-   Attempts to convert the response data into a readable `String`.
-
-   - Returns: A formatted `String` representation of the data if possible, otherwise `"Binary Data"`.
-   */
+  /// Debug-friendly representation of the body.
   var debugString: String {
     String(data: data, encoding: .utf8) ?? "Binary Data"
   }
@@ -224,16 +183,10 @@ extension NetworkStubResponseItem {
 // MARK: - NetworkStubType
 
 /**
- An enumeration representing different types of network stubs.
-
- - `error`: Simulates a network error.
- - `data`: Provides only response data without headers.
- - `response`: Provides a full HTTP response including headers and body.
- - `empty`: Represents a stub with no error, data, or response.
+ Represents the type of stub (error, raw data, or full response).
  */
 enum NetworkStubType: Codable {
   case error
   case data
   case response
-  case empty
 }

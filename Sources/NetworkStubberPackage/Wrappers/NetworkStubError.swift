@@ -9,9 +9,6 @@ import Foundation
 
 /**
  A `Codable` struct that wraps `NSError`, allowing errors to be encoded and decoded.
-
- Since `NSError` does not conform to `Codable`, this struct extracts essential properties
- (domain, code, and userInfo) to allow serialization and deserialization.
  */
 public struct NetworkStubError: Codable, Sendable {
 
@@ -48,5 +45,43 @@ extension NetworkStubError {
    */
   public func toNSError() -> NSError {
     return NSError(domain: domain, code: code, userInfo: userInfo)
+  }
+}
+
+// MARK: - Internal Error
+
+/**
+ A set of internal errors that may occur within the `NetworkStubber`.
+ */
+enum NetworkStubberInternalError: Error, CustomStringConvertible {
+
+  /**
+   Indicates that a stored response could not be converted to an `HTTPURLResponse`.
+
+   This usually means that the underlying response structure was invalid or improperly formed,
+   which prevents `URLProtocol` from completing the stubbing process successfully.
+
+   - Parameter url: The URL associated with the failing stub.
+   */
+  case failedToConvertStoredResponse(URL)
+
+  /**
+   Indicates that the request has no valid URL.
+
+   This may happen when a `URLRequest` is mutated or constructed improperly,
+   causing its `url` property to be `nil`, which breaks stubbing logic.
+   */
+  case invalidURL
+
+  /**
+   A textual description of the error, useful for logging and debugging.
+   */
+  var description: String {
+    switch self {
+    case .failedToConvertStoredResponse(let url):
+      return "Failed to convert stored response to HTTPURLResponse for \(url)"
+    case .invalidURL:
+      return "The request has an invalid or missing URL."
+    }
   }
 }

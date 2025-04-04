@@ -74,12 +74,6 @@
             ReferencedContainer = "container:NetworkStubberDemo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <CommandLineArguments>
-         <CommandLineArgument
-            argument = "-NetworkStubs WwogIHsKICAgICJkYXRhIiA6IHsKICAgICAgImRhdGEiIDogImV5QWliV1Z6YzJGblpTSTZJQ0pJWld4c2J5RWlJSDA9IiwKICAgICAgInN0YXR1c0NvZGUiIDogMjAwLAogICAgICAiaXNDb2RhYmxlIiA6IGZhbHNlCiAgICB9LAogICAgInR5cGUiIDogewogICAgICAiZGF0YSIgOiB7CgogICAgICB9CiAgICB9LAogICAgInVybCIgOiAiaHR0cHM6XC9cL2FwaS5leGFtcGxlLmNvbVwvZGF0YSIKICB9LAogIHsKICAgICJ1cmwiIDogImh0dHBzOlwvXC9hcGkuZXhhbXBsZS5jb21cL2RhdGEiLAogICAgImRhdGEiIDogewogICAgICAiaXNDb2RhYmxlIiA6IGZhbHNlLAogICAgICAiZGF0YSIgOiAiZXlBaWJXVnpjMkZuWlNJNklDSklaV3hzYnlFaUlIMD0iLAogICAgICAic3RhdHVzQ29kZSIgOiA0MDAKICAgIH0sCiAgICAidHlwZSIgOiB7CiAgICAgICJkYXRhIiA6IHsKCiAgICAgIH0KICAgIH0KICB9Cl0="
-            isEnabled = "YES">
-         </CommandLineArgument>
-      </CommandLineArguments>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

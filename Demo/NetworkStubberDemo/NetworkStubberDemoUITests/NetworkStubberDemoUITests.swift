@@ -12,56 +12,54 @@ final class NetworkStubberDemoUITests: XCTestCase {
 
   let app = XCUIApplication()
 
-  func testSetLaunchArgumentsForStubs() {
-    let stubA = NetworkStub(
-      url: URL(string: "https://api.example.com/data")!,
-      data: NetworkStubDataItem(statusCode: 200, data: Data("{ \"message\": \"Hello!\" }".utf8))
-    )
+  func testLaunchArgumentDecodingCoversMultiplePredicateTypes() {
+    let predicates: [NetworkStubPredicate] = [
+      NetworkStubPredicate.isHost("api.example.com"),
+      NetworkStubPredicate.isPath("/v1/data"),
+      NetworkStubPredicate.hasHeaderField(name: "Authorization", value: "Bearer test"),
+      NetworkStubPredicate.hasPathPrefix("/v1"),
+      NetworkStubPredicate.hasPathSuffix("json"),
+      NetworkStubPredicate.hasPathExtension("json"),
+      NetworkStubPredicate.hasLastPathComponent("file.json"),
+      NetworkStubPredicate.containsQueryItems([URLQueryItem(name: "id", value: "123")]),
+      NetworkStubPredicate.isURLString("https://api.example.com/v1/data?id=123"),
+      NetworkStubPredicate.isURL(URL(string: "https://api.example.com/v1/data?id=123")!),
+      NetworkStubPredicate.headerFieldMatches(name: "Content-Type", pattern: "application/json.*"),
+      NetworkStubPredicate.hasHeaderField(name: "X-Test-Header"),
+      NetworkStubPredicate.alwaysTrue,
+      NetworkStubPredicate.alwaysFalse,
+      NetworkStubPredicate.isHTTPMethod(.get),
+      NetworkStubPredicate.isHTTPMethod(.post),
+      NetworkStubPredicate.isHost("not-this.com")
+    ]
 
-    let stubB = NetworkStub(
-      url: URL(string: "https://api.example.com/data")!,
-      data: NetworkStubDataItem(statusCode: 400, data: Data("{ \"message\": \"Hello!\" }".utf8))
-    )
+    let stubs: [NetworkStub] = predicates.compactMap {
+      NetworkStub(
+        predicate: $0,
+        data: NetworkStubDataItem(
+          statusCode: 200,
+          data: Data("{\"ok\": true}".utf8)
+        )
+      )
+    }
 
-    setLaunchArgumentsForStubs([stubA, stubB])
+    setLaunchArgumentsForStubs(stubs)
 
     app.launch()
 
-    XCTAssertTrue(
-      app.launchArguments.contains("-NetworkStubs"),
-      "Launch arguments should contain the network stubs flag"
-    )
+    XCTAssertTrue(app.launchArguments.contains("-NetworkStubs"), "Launch arguments should contain the stubs flag")
 
     guard
       let base64Index = app.launchArguments.firstIndex(of: "-NetworkStubs"),
-      app.launchArguments.indices.contains(base64Index + 1)
+      app.launchArguments.indices.contains(base64Index + 1),
+      let base64Data = Data(base64Encoded: app.launchArguments[base64Index + 1])
     else {
-      XCTFail("No Base64 stub data found in launch arguments")
+      XCTFail("Base64 stub data not found or invalid")
       return
     }
 
-    let base64String = app.launchArguments[base64Index + 1]
-
-    guard
-      let jsonData = Data(base64Encoded: base64String)
-    else {
-      XCTFail("Failed to decode Base64 stub data from launch arguments")
-      return
-    }
-
-    let decoder = JSONDecoder()
-
-    guard
-      let decodedStubs = try? decoder.decode([NetworkStub].self, from: jsonData)
-    else {
-      XCTFail("Failed to decode JSON stub data from Base64-decoded string")
-      return
-    }
-
-    XCTAssertEqual(
-      decodedStubs.count, 2,
-      "There should be two stubs in the JSON data"
-    )
+    let decoded = try? JSONDecoder().decode([NetworkStub].self, from: base64Data)
+    XCTAssertEqual(decoded?.count, predicates.count, "Decoded stubs should match predicate count")
   }
 }
 
@@ -69,8 +67,6 @@ final class NetworkStubberDemoUITests: XCTestCase {
 
 extension NetworkStubberDemoUITests {
 
-  /// Adds stubs as launch arguments for UI tests
-  /// - Parameter stubs: Array of `NetworkStub` objects
   public func setLaunchArgumentsForStubs(_ stubs: [NetworkStub]) {
     let encoder = JSONEncoder()
     encoder.outputFormatting = .prettyPrinted

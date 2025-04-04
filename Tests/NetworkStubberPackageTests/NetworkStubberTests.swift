@@ -1,227 +1,312 @@
-//  NetworkStubberTests.swift
-//  NetworkStubberTests
-//
-//  Created by Josh Robbins on 3/20/25.
-//
+/// NetworkStubberIntegrationTests.swift
+/// NetworkStubberTests
 
 @testable import NetworkStubberPackage
 import XCTest
 
-final class NetworkStubberTests: XCTestCase {
+final class NetworkStubberIntegrationTests: XCTestCase {
 
-  private var logger: MockNetworkStubLogger!
   private var session: URLSession!
+  private var logger: NetworkStubLogger!
 
-  // MARK: - Lifecycle
+  // MARK: - LifeCycle
 
   override func setUp() {
     super.setUp()
-
-    logger = MockNetworkStubLogger()
+    NetworkStubber.purge()
+    logger = NetworkStubLogger()
     NetworkStubber.setLogger(logger)
 
-    let configuration = URLSessionConfiguration.ephemeral
-    configuration.protocolClasses = [NetworkStubber.self]
-    session = URLSession(configuration: configuration)
+    let config = URLSessionConfiguration.ephemeral
+    config.protocolClasses = [NetworkStubber.self]
+    session = URLSession(configuration: config)
   }
 
   override func tearDown() {
-    super.tearDown()
-    NetworkStubber.purge()
     session.invalidateAndCancel()
+    super.tearDown()
   }
 
   // MARK: - Tests
 
-  func testCanInitWithMatchingStub() {
-    let url = URL(string: "https://api.example.com")!
-    let stub = NetworkStub(url: url, data: NetworkStubDataItem(statusCode: 200, data: Data()))
-
-    NetworkStubber.add(stub)
-
-    let request = URLRequest(url: url)
-    let canHandle = NetworkStubber.canInit(with: request)
-
-    XCTAssertTrue(canHandle, "NetworkStubber should return true for a request that has a registered stub")
-    XCTAssertEqual(logger.lastLogMessage(), adddedStubMessage(url))
+  func testDataStubWithIsPathPredicate() async {
+    await assertDataStub(
+      request: requestFromString("https://twinkl.com/path/abc"),
+      predicate: .isPath("/path/abc"),
+      expectedData: "OK"
+    )
   }
 
-  func testCanInitWithNoMatchingStub() {
-    let url = URL(string: "https://api.example.com")!
-    let request = URLRequest(url: url)
-    let canHandle = NetworkStubber.canInit(with: request)
-    XCTAssertFalse(canHandle, "NetworkStubber should return false for a request with no registered stub")
+  func testErrorStubWithIsHostPredicate() async {
+    await assertErrorStub(
+      request: requestFromString("https://error.twinkl.com/test"),
+      predicate: .isHost("error.twinkl.com")
+    )
   }
 
-  func testHandleStubError() {
-    let url = URL(string: "https://api.example.com/error")!
-    let stubError = NSError(domain: "TestError", code: -1, userInfo: nil)
-    let stub = NetworkStub(url: url, error: stubError)
+  func testCodableResponseStubWithQueryPredicate() async throws {
 
-    let (_, _, error) = performRequest(url: url, stub: stub, expectationDescription: "Error response received")
-    XCTAssertEqual((error as NSError?)?.code, -1, "Returned error should match the stubbed error")
+    struct User: Codable, Equatable { let name: String }
 
-    let expectedLog = [
-      adddedStubMessage(url),
-      stubbingRequest(url),
-      stubbingErrorMessage(stubError),
-      completionStubMessage(url)
-    ]
-    assertLogSequence(expected: expectedLog)
+    let user = User(name: "Test")
+    try await assertCodableStub(
+      request: requestFromString("https://twinkl.com/users?id=42"),
+      predicate: .containsQueryItems([URLQueryItem(name: "id", value: "42")]),
+      object: user
+    )
   }
 
-  func testHandleStubDataResponse() {
-    let url = URL(string: "https://api.example.com/data")!
-    guard let responseData = "Hello, World!".data(using: .utf8) else {
-      XCTFail("Data error")
-      return
-    }
+  func testCanInitUsesPredicateEvaluation() {
+    let predicate1 = NetworkStubPredicate.hasPathPrefix("/foo")
+    let predicate2 = NetworkStubPredicate.hasPathSuffix("/baz")
 
-    let stub = NetworkStub(url: url, data: NetworkStubDataItem(statusCode: 200, data: responseData))
-    let (data, status, _) = performRequest(url: url, stub: stub, expectationDescription: "Data response received")
+    NetworkStubber.addStubs([
+      NetworkStub(
+        predicate: predicate1,
+        data: NetworkStubDataItem(statusCode: 200, data: Data())
+      ),
+      NetworkStub(
+        predicate: predicate2,
+        data: NetworkStubDataItem(statusCode: 200, data: Data())
+      )
+    ])
 
-    XCTAssertEqual(status, 200, "HTTP response status code should match stubbed value")
-    XCTAssertEqual(data, responseData, "Returned data should match the stubbed data")
+    let request = requestFromString("https://api.twinkl.co.uk/foo/bar")
 
-    let expectedLog = [
-      adddedStubMessage(url),
-      stubbingRequest(url),
-      stubDataMessage(stub.data!, url: url),
-      completionStubMessage(url)
-    ]
-    assertLogSequence(expected: expectedLog)
+    XCTAssertTrue(
+      NetworkStubber.canInit(with: request),
+      "At least one stub should match the request"
+    )
   }
 
-  func testHandleStubResponse() {
-    let url = URL(string: "https://api.example.com/fullresponse")!
-    guard let responseData = """
-    { "message": "Success" }
-    """.data(using: .utf8) else {
-      XCTFail("Data error")
-      return
-    }
-
-    let httpResponse = HTTPURLResponse(
-      url: url,
-      statusCode: 201,
-      httpVersion: nil,
-      headerFields: ["Content-Type": "application/json"]
-    )!
-
-    let stub = NetworkStub(url: url, response: NetworkStubResponseItem(response: httpResponse, data: responseData))
-
-    let (data, status, _) = performRequest(url: url, stub: stub, expectationDescription: "Full response received")
-    XCTAssertEqual(status, 201, "HTTP response status code should match stubbed value")
-    XCTAssertEqual(data, responseData, "Returned data should match the stubbed response body")
-
-    let expectedLog = [
-      adddedStubMessage(url),
-      stubbingRequest(url),
-      stubResponseMessage(stub.response!, url: url),
-      completionStubMessage(url)
-    ]
-    assertLogSequence(expected: expectedLog)
+  func testHasHeaderFieldWithMatchingValue() async {
+    var request = requestFromString("https://twinkggl.com/headers")
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    await assertDataStub(
+      request: request,
+      predicate: .hasHeaderField(name: "Content-Type", value: "application/json"),
+      expectedData: "Header OK"
+    )
   }
 
-  func testRegisterStubs() {
-    let url1 = URL(string: "https://api.example.com/first")!
-    let url2 = URL(string: "https://api.example.com/second")!
+  func testPathExtensionPredicate() async {
 
-    let stub1 = NetworkStub(url: url1, data: NetworkStubDataItem(statusCode: 200, data: Data()))
-    let stub2 = NetworkStub(url: url2, error: NSError(domain: "TestError", code: -1, userInfo: nil))
-
-    NetworkStubber.addStubs([stub1, stub2])
-
-    let request1 = URLRequest(url: url1)
-    let request2 = URLRequest(url: url2)
-
-    XCTAssertTrue(NetworkStubber.canInit(with: request1), "NetworkStubber should return true for the first registered stub")
-    XCTAssertTrue(NetworkStubber.canInit(with: request2), "NetworkStubber should return true for the second registered stub")
-
-    let expectedLog = [
-      adddedStubMessage(url1),
-      adddedStubMessage(url2)
-    ]
-    assertLogSequence(expected: expectedLog)
+    await assertDataStub(
+      request: requestFromString("https://twinkl.com/assets/image.png"),
+      predicate: .hasPathExtension("png"),
+      expectedData: "PNG OK"
+    )
   }
 
-  func testPurgeStubs() {
-    let url = URL(string: "https://api.example.com")!
-    let stub = NetworkStub(url: url, data: NetworkStubDataItem(statusCode: 200, data: Data()))
+  func testHeaderFieldMatchesRegexFails() async {
+    var request = requestFromString("https://twinkl.com/regex")
+    request.setValue("text/html", forHTTPHeaderField: "Accept")
+    await assertNoMatch(
+      request: request,
+      predicate: .headerFieldMatches(name: "Accept", pattern: "^application/json$"),
+      expected: "Should not match"
+    )
+  }
 
-    NetworkStubber.add(stub)
-    NetworkStubber.purge()
+  func testNotPredicateNegatesMatch() async {
 
-    let request = URLRequest(url: url)
-    XCTAssertFalse(NetworkStubber.canInit(with: request), "NetworkStubber should return false after purging stubs")
+    await assertDataStub(
+      request: requestFromString("https://twinkl.com/test"),
+      predicate: !.isHost("not-twinkl.com"),
+      expectedData: "NOT OK"
+    )
+  }
+
+  func testHeaderExistsPredicate() async {
+    var request = requestFromString("https://twinkl.com/exists")
+    request.setValue("123", forHTTPHeaderField: "X-Custom-Header")
+    await assertDataStub(
+      request: request,
+      predicate: .hasHeaderField(name: "X-Custom-Header"),
+      expectedData: "Exists OK"
+    )
+  }
+
+  func testURLStringPredicate() async {
+    await assertDataStub(
+      request: requestFromString("https://twinkl.com/full/path?key=value"),
+      predicate: .isURLString("https://twinkl.com/full/path?key=value"),
+      expectedData: "URLString OK"
+    )
+  }
+
+  func testExactURLPredicate() async {
+    let request = requestFromString("https://twinkl.com/api/data")
+    await assertDataStub(
+      request: request,
+      predicate: .isURL(request.url!),
+      expectedData: "Exact URL OK"
+    )
+  }
+
+  func testLastPathComponentPredicate() async {
+    let request = requestFromString("https://twinkl.com/path/to/resource.json")
+    await assertDataStub(
+      request: request,
+      predicate: .hasLastPathComponent("resource.json"),
+      expectedData: "Last Path OK"
+    )
+  }
+
+  func testAlwaysFalsePredicate() async {
+    let request = requestFromString("https://twinkl.com/wontmatch")
+    await assertNoMatch(
+      request: request,
+      predicate: .alwaysFalse,
+      expected: "No Match"
+    )
+  }
+
+  func testPredicateWithMissingURLFailsGracefully() async {
+    var request = requestFromString("https://placeholder.com")
+    request.url = nil
+    let predicate = NetworkStubPredicate.isPath("/some/path")
+    await assertNoMatch(
+      request: request,
+      predicate: predicate,
+      expected: "Should not match"
+    )
+  }
+
+  func testHeaderFieldMatchesRegexSuccess() async {
+    var request = requestFromString("https://twinkl.com/assets")
+    request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+    let predicate = NetworkStubPredicate.headerFieldMatches(
+      name: "Content-Type",
+      pattern: "application/json.*"
+    )
+    await assertDataStub(
+      request: request,
+      predicate: predicate,
+      expectedData: "Regex match success"
+    )
+  }
+
+  func testHeaderFieldMatchesWithInvalidPattern() async {
+    var request = requestFromString("https://twinkl.com/assets")
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    let predicate = NetworkStubPredicate.headerFieldMatches(name: "Content-Type", pattern: "[unterminated")
+    await assertNoMatch(
+      request: request,
+      predicate: predicate,
+      expected: "Invalid pattern should not match"
+    )
+  }
+
+  func testNotHostPredicateMatchesDifferentHost() async {
+    let predicate = !.isHost("some-other-host.com")
+    let request = requestFromString("https://twinkl.com/api/test")
+
+    await assertDataStub(
+      request: request,
+      predicate: predicate,
+      expectedData: "Matched NOT predicate"
+    )
+  }
+
+  func testNotPredicateOnAnd() async {
+    let request = requestFromString("https://foo.local/api/data")
+    let inner = .isHost("foo.local") && .isPath("/api/data")
+    let predicate = !inner
+
+    await assertNoMatch(
+      request: request,
+      predicate: predicate,
+      expected: "Should not match"
+    )
   }
 }
 
 // MARK: - Helpers
 
-extension NetworkStubberTests {
+extension NetworkStubberIntegrationTests {
 
-  @discardableResult
-  private func performRequest(
-    url: URL,
-    stub: NetworkStub,
-    expectationDescription: String
-  ) -> (Data?, Int?, Error?) {
-    NetworkStubber.add(stub)
-    let expectation = expectation(description: expectationDescription)
-
-    var responseData: Data?
-    var responseStatus: Int?
-    var responseError: Error?
-
-    let request = URLRequest(url: url)
-    let task = session.dataTask(with: request) { data, response, error in
-      responseData = data
-      responseError = error
-      responseStatus = (response as? HTTPURLResponse)?.statusCode
-      expectation.fulfill()
-    }
-
-    task.resume()
-    wait(for: [expectation], timeout: 2)
-    return (responseData, responseStatus, responseError)
+  private func requestFromString(_ value: String) -> URLRequest {
+    URLRequest(url: URL(string: value)!)
   }
 
-  private func assertLogSequence(expected: [String]) {
-    XCTAssertEqual(
-      logger.loggedMessages,
-      expected,
-      "Logger messages should match expected sequence"
+  private func assertDataStub(
+    request: URLRequest,
+    predicate: NetworkStubPredicate,
+    expectedData: String,
+    statusCode: Int = 200
+  ) async {
+    let stub = NetworkStub(
+      predicate: predicate,
+      data: NetworkStubDataItem(statusCode: statusCode, data: Data(expectedData.utf8))
     )
+    NetworkStubber.add(stub)
+
+    let (data, response) = try! await session.data(for: request)
+    XCTAssertEqual(String(data: data, encoding: .utf8), expectedData)
+    XCTAssertEqual((response as? HTTPURLResponse)?.statusCode, statusCode)
   }
 
-  private func adddedStubMessage(_ url: URL) -> String {
-    "✅ URL: \(url) added to NetworkStubber"
+  private func assertErrorStub(
+    request: URLRequest,
+    predicate: NetworkStubPredicate,
+    errorDomain: String = "test",
+    errorCode: Int = 404
+  ) async {
+    let error = NSError(domain: errorDomain, code: errorCode, userInfo: nil)
+    let stub = NetworkStub(predicate: predicate, error: error)
+    NetworkStubber.add(stub)
+
+    do {
+      _ = try await session.data(for: request)
+      XCTFail("Expected error but got success")
+    } catch {
+      XCTAssertNotNil(error)
+    }
   }
 
-  private func stubbingRequest(_ url: URL) -> String {
-    "🧪 Stubbing request for \(url)"
+  private func assertCodableStub<T: Codable & Equatable>(
+    request: URLRequest,
+    predicate: NetworkStubPredicate,
+    object: T,
+    statusCode: Int = 200
+  ) async throws {
+    guard let url = request.url else {
+      XCTFail("Request must contain a URL")
+      return
+    }
+    let response = HTTPURLResponse(url: url, statusCode: statusCode, httpVersion: nil, headerFields: nil)!
+    let stub = try NetworkStub(predicate: predicate, response: NetworkStubResponseItem(response: response, codable: object))
+    NetworkStubber.add(stub)
+
+    let (data, resp) = try await session.data(for: request)
+    let decoded = try JSONDecoder().decode(T.self, from: data)
+    XCTAssertEqual(decoded, object)
+    XCTAssertEqual((resp as? HTTPURLResponse)?.statusCode, statusCode)
   }
 
-  private func stubbingErrorMessage(_ error: Error) -> String {
-    "⚠️ Stubbing error: \(error.localizedDescription)"
-  }
+  private func assertNoMatch(
+    request: URLRequest,
+    predicate: NetworkStubPredicate,
+    expected: String
+  ) async {
+    let stub = NetworkStub(
+      predicate: predicate,
+      data: NetworkStubDataItem(statusCode: 200, data: Data(expected.utf8))
+    )
+    NetworkStubber.add(stub)
 
-  private func stubDataMessage(_ dataStub: NetworkStubDataItem, url: URL) -> String {
-    dataStub.isCodable
-      ? "📡 Stubbing sending Codable response for \(url): \(dataStub.debugString)"
-      : "📡 Stubbing sending Data response for \(url): \(dataStub.debugString)"
-  }
+    // Add a fallback that will cause failure if the stub isn't hit
+    NetworkStubber.add(NetworkStub(
+      predicate: .alwaysTrue,
+      error: URLError(.notConnectedToInternet)
+    ))
 
-  private func stubResponseMessage(_ responseStub: NetworkStubResponseItem, url: URL) -> String {
-    "📡 Stubbing response for \(url): \(responseStub.debugString)"
-  }
+    do {
+      let (data, _) = try await session.data(for: request)
+      let actual = String(data: data, encoding: .utf8)
 
-  private func emptyStubMessage(_ url: URL) -> String {
-    "⚠️ Stub is empty for \(url), returning without modification"
-  }
-
-  private func completionStubMessage(_ url: URL) -> String {
-    "🧪 Stubbing completed for \(url)"
+      XCTFail("Request unexpectedly matched stub. Returned: \(actual ?? "<nil>")")
+    } catch {}
   }
 }

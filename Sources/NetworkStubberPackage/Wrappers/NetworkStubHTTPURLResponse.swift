@@ -9,9 +9,6 @@ import Foundation
 
 /**
  A `Codable` wrapper for `HTTPURLResponse` to allow serialization.
-
- Since `HTTPURLResponse` does not conform to `Codable`, this struct extracts
- key properties for encoding and decoding.
  */
 public struct NetworkStubHTTPURLResponse: Codable, Sendable {
   /// The URL of the response.

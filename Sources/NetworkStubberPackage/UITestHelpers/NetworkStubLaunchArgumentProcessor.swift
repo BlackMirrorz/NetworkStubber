@@ -1,103 +1,83 @@
-//
-//  NetworkStubLaunchArgumentProcessor.swift
-//  NetworkStubberPackage
-//
-//  Created by Josh Robbins on 3/20/25.
-//
-
-//
-//  NetworkStubLaunchArgumentProcessor.swift
-//  NetworkStubberPackage
-//
-//  Created by Josh Robbins on 3/20/25.
-//
-
 import Foundation
-import OSLog
+import os
 
 private let logger = Logger(subsystem: "networkStubber", category: "launchArguments")
 
 /**
- A utility enum that processes network stub launch arguments for UI tests.
-
- This allows network stubs to be passed as a Base64-encoded JSON string in launch arguments
- or environment variables, enabling UI tests to use preconfigured stubbed responses.
-
+ A utility that processes Base64-encoded launch arguments or environment variables to decode and register `[NetworkStub]` instances.
  ## Usage:
- - In UI tests, encode `NetworkStub` objects as Base64 JSON and pass them via `XCUIApplication.launchArguments`
-   or as an environment variable.
- - On app launch, this processor reads the arguments, decodes them, and registers the stubs automatically.
+ - Encode `[NetworkStub]` to JSON, then Base64.
+ - Pass as `-NetworkStubs` launch argument, or set `NetworkStubs` environment variable.
 
- ## Behavior:
- - If the `-NetworkStubs` environment variable is set, it is prioritized over launch arguments.
- - If the environment variable is absent, it falls back to checking `-NetworkStubs` in launch arguments.
- - Stubs are decoded from Base64 and passed to `NetworkStubber` for use in UI tests.
+ ## Note:
+ This processor must run at app launch (e.g., in `AppDelegate`) before network requests begin.
  */
 public enum NetworkStubLaunchArgumentProcessor {
 
+  /// Key used in launch arguments.
+  private static let argumentKey = "-NetworkStubs"
+
+  /// Key used in environment variables.
+  private static let environmentKey = "NetworkStubs"
+
   /**
-   Processes launch arguments and environment variables to extract and register network stubs.
+   Processes launch arguments and environment to decode and register `[NetworkStub]`.
 
-   This function first checks if the `-NetworkStubs` environment variable is set and contains a valid
-   Base64-encoded JSON payload. If found, the stubs are decoded and registered with `NetworkStubber`.
+   Priority:
+   1. Environment variable `NetworkStubs`
+   2. Launch argument `-NetworkStubs <Base64 JSON>`
 
-   If the environment variable is not set, it falls back to checking the `-NetworkStubs` launch argument.
-
-   - Parameter verboseLogging: Enables detailed logging of the decoding and processing steps.
-   - Note: This function should be called early in the app lifecycle (e.g., in `AppDelegate` or `SceneDelegate`)
-     to ensure stubs are applied before network requests are made.
+   - Parameter verboseLogging: Whether to log internal decoding and registration steps.
    */
   public static func processLaunchArgumentsForStubs(verboseLogging: Bool = true) {
-    let arguments = ProcessInfo.processInfo.arguments
+    let processInfo = ProcessInfo.processInfo
 
-    logMessage("📩 Launch Arguments: \(arguments)", verbose: verboseLogging)
-
-    guard
-      let stubArgumentIndex = arguments.firstIndex(of: "-NetworkStubs"),
-      arguments.indices.contains(stubArgumentIndex + 1)
-    else {
-      logMessage("🚨 No -NetworkStubs argument found", verbose: verboseLogging)
+    if let envString = processInfo.environment[environmentKey] {
+      logMessage("📦 Found environment variable `NetworkStubs`", verbose: verboseLogging)
+      decodeAndRegisterStubs(from: envString, verboseLogging: verboseLogging)
       return
     }
 
-    let base64String = arguments[stubArgumentIndex + 1]
+    let arguments = processInfo.arguments
+    logMessage("🧾 Launch Arguments: \(arguments)", verbose: verboseLogging)
+
+    guard
+      let index = arguments.firstIndex(of: argumentKey),
+      arguments.indices.contains(index + 1)
+    else {
+      logMessage("⚠️ No `-NetworkStubs` argument found", verbose: verboseLogging)
+      return
+    }
+
+    let base64String = arguments[index + 1]
     decodeAndRegisterStubs(from: base64String, verboseLogging: verboseLogging)
   }
 
   /**
-   Decodes and registers network stubs from a Base64-encoded JSON string.
-
-   This function attempts to decode the given Base64 string into an array of `NetworkStub` objects.
-   If successful, the stubs are registered for use in UI tests.
+   Decodes a Base64-encoded JSON array of `[NetworkStub]` and registers them with `NetworkStubber`.
 
    - Parameters:
-     - base64String: The Base64-encoded JSON string containing the network stubs.
-     - verboseLogging: Enables detailed logging for debugging purposes.
+     - base64String: A Base64-encoded JSON string of stubs.
+     - verboseLogging: Whether to log decoding and registration steps.
    */
   private static func decodeAndRegisterStubs(from base64String: String, verboseLogging: Bool) {
-    guard let jsonData = Data(base64Encoded: base64String) else {
-      logMessage("🚨 Failed to decode Base64 string for NetworkStubs", verbose: verboseLogging)
+    guard
+      let jsonData = Data(base64Encoded: base64String)
+    else {
+      logMessage("🚫 Failed to decode Base64 string", verbose: verboseLogging)
       return
     }
 
-    let decoder = JSONDecoder()
-
     do {
-      let stubs = try decoder.decode([NetworkStub].self, from: jsonData)
-      logMessage("✅ Successfully parsed \(stubs.count) NetworkStubs", verbose: verboseLogging)
+      let stubs = try JSONDecoder().decode([NetworkStub].self, from: jsonData)
+      logMessage("✅ Successfully decoded \(stubs.count) NetworkStub(s)", verbose: verboseLogging)
       NetworkStubber.addStubs(stubs)
     } catch {
-      logMessage("🚨 JSON Decoding Error: \(error.localizedDescription)", verbose: verboseLogging)
+      logMessage("❌ Failed to decode [NetworkStub]: \(error.localizedDescription)", verbose: verboseLogging)
     }
   }
 
-  /**
-   Logs a message using `OSLog`, but only if verbose logging is enabled.
-
-   - Parameters:
-     - message: The message to log.
-     - verbose: A flag indicating whether logging should be performed.
-   */
+  /// Logs a message to the OS Logger if verbose mode is enabled.
   private static func logMessage(_ message: String, verbose: Bool) {
     guard verbose else { return }
     logger.info("\(message, privacy: .public)")

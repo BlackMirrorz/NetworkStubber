@@ -10,55 +10,67 @@ import XCTest
 
 final class NetworkStubTypeTests: XCTestCase {
 
-  func testNetworkStubTypeError() {
+  func testNetworkStubTypeError() throws {
+    let predicate = NetworkStubPredicate.alwaysTrue
     let stub = NetworkStub(
-      url: URL(string: "https://api.example.com")!,
+      predicate: predicate,
       error: NSError(domain: "Test", code: 1)
     )
 
+    let unwrapped = try XCTUnwrap(stub, "Error stub should be successfully created")
+
     XCTAssertEqual(
-      stub.type,
+      unwrapped.type,
       .error,
       "Stub should be of type .error when an error is provided"
     )
   }
 
-  func testNetworkStubTypeResponse() {
+  func testNetworkStubTypeResponse() throws {
+    let url = URL(string: "https://api.example.com")!
     let response = HTTPURLResponse(
-      url: URL(string: "https://api.example.com")!,
+      url: url,
       statusCode: 200,
       httpVersion: nil,
       headerFields: nil
     )!
-    let stub = NetworkStub(url: response.url!, response: NetworkStubResponseItem(response: response, data: Data()))
+
+    let stub = NetworkStub(
+      predicate: .isHost("api.example.com"),
+      response: NetworkStubResponseItem(response: response, data: Data())
+    )
+
+    let unwrapped = try XCTUnwrap(stub, "Response stub should be successfully created")
 
     XCTAssertEqual(
-      stub.type,
+      unwrapped.type,
       .response,
       "Stub should be of type .response when a full response is provided"
     )
   }
 
-  func testNetworkStubTypeData() {
+  func testNetworkStubTypeData() throws {
+
     let stub = NetworkStub(
-      url: URL(string: "https://api.example.com")!,
+      predicate: .isPath("/users"),
       data: NetworkStubDataItem(statusCode: 200, data: Data())
     )
 
+    let unwrapped = try XCTUnwrap(stub, "Data stub should be successfully created")
+
     XCTAssertEqual(
-      stub.type,
+      unwrapped.type,
       .data,
       "Stub should be of type .data when only data is provided"
     )
   }
 
-  func testNetworkStubTypeEmpty() {
-    let stub = NetworkStub(url: URL(string: "https://api.example.com")!)
+  func testNetworkStubTypeFailsForEmpty() {
+    let stub = NetworkStub(predicate: .alwaysFalse)
 
-    XCTAssertEqual(
-      stub.type,
-      .empty,
-      "Stub should be of type .empty when no data, error, or response is provided"
+    XCTAssertNil(
+      stub,
+      "Stub should be nil when no error, data, or response is provided"
     )
   }
 }

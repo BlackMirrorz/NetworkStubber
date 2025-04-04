@@ -25,8 +25,34 @@ final class NetworkStubErrorTests: XCTestCase {
 
     let expectedError = stubError.toNSError()
 
-    XCTAssertEqual(expectedError.domain, "TestDomain", "Converted NSError domain should match")
-    XCTAssertEqual(expectedError.code, 500, "Converted NSError code should match")
-    XCTAssertEqual(expectedError.userInfo["ErrorKey"] as? String, "ErrorValue", "Converted NSError userInfo should match")
+    XCTAssertEqual(
+      expectedError.domain,
+      "TestDomain",
+      "Converted NSError domain should match"
+    )
+    XCTAssertEqual(
+      expectedError.code,
+      500,
+      "Converted NSError code should match"
+    )
+    XCTAssertEqual(
+      expectedError.userInfo["ErrorKey"] as? String,
+      "ErrorValue",
+      "Converted NSError userInfo should match"
+    )
+  }
+
+  // MARK: - Internal Error
+
+  func testFailedToConvertStoredResponseDescription() {
+    let url = URL(string: "https://twinkl.co.uk/fail")!
+    let error = NetworkStubberInternalError.failedToConvertStoredResponse(url)
+    let description = error.description
+
+    XCTAssertEqual(
+      description,
+      "Failed to convert stored response to HTTPURLResponse for \(url)",
+      "Description should match the expected string"
+    )
   }
 }
