@@ -7,36 +7,69 @@
 
 import Foundation
 
+/// Represents the various predicate types used to evaluate a `URLRequest`.
 public indirect enum NetworkStubPredicateType: Codable, Equatable, Sendable {
 
   // MARK: - Base Types
 
+  /// Matches the HTTP method of the request (e.g., GET, POST).
   case httpMethod(HTTPMethod)
+
+  /// Matches the exact path component of the request URL (e.g., `/api/user`).
   case path(String)
+
+  /// Matches the exact host of the request URL (e.g., `api.example.com`).
   case host(String)
+
+  /// Matches a specific HTTP header field and an optional value (e.g., `"Content-Type": "application/json"`).
   case header(name: String, value: String?)
+
+  /// Matches a header value using a regular expression (e.g., `"Authorization": "Bearer .*"`).
   case headerMatches(name: String, pattern: String)
+
+  /// Matches if a header field exists, regardless of its value.
   case headerExists(String)
+
+  /// Matches the full URL string exactly (e.g., `"https://api.example.com/users"`).
   case urlString(String)
+
+  /// Matches the full URL object exactly.
   case url(URL)
+
+  /// Matches if the path component starts with a specific prefix.
   case pathPrefix(String)
+
+  /// Matches if the path component ends with a specific suffix.
   case pathSuffix(String)
+
+  /// Matches if the path extension matches the given string (e.g., `".json"` or `".png"`).
   case pathExtension(String)
+
+  /// Matches if the last component of the URL path equals the given string.
   case lastPathComponent(String)
+
+  /// Matches if the request URL contains all the specified query items (e.g., `?user=123&type=admin`).
   case containsQueryItems([NetworkStubQueryItem])
 
   // MARK: - Logical Operands
 
+  /// Combines multiple predicates using a logical AND operation.
   case and([NetworkStubPredicateType])
+
+  /// Combines multiple predicates using a logical OR operation.
   case or([NetworkStubPredicateType])
+
+  /// Negates a single predicate (i.e., logical NOT).
   case not(NetworkStubPredicateType)
 
   // MARK: - Constants
 
+  /// A predicate that always returns true, useful for matching all requests.
   case alwaysTrue
+
+  /// A predicate that always returns false, useful for disabling stubs conditionally.
   case alwaysFalse
 }
-
 // MARK: - Evaluation
 
 extension NetworkStubPredicateType {

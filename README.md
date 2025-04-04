@@ -3,18 +3,23 @@
 A simple wrapper around URLProtocol that allows you to intercept and stub URLSession network requests in Swift by:
 1. Simulating network failures.
 2. Returning custom response data with HTTP status codes.
-3. Returnin full HTTP responses with headers and body.
+3. Returning full HTTP responses with headers and body.
 
-## Available Functions:
+## Getting Started:
+
+### Basic Functions:
+
+Network Stubber works by intercepting URLSession requests.
+To get started, create a `NetworkStub` which conforms to `NetworkStubProtocol` and add it to NetworkStubber.
 
 ```swift
 /// Adds a single network stub to the stub store.
 /// - Parameter stub: The `NetworkStub` instance to be added.
-public static func add(_ stub: NetworkStub) { }
+public static func add(_ stub: NetworkStub?) { }
 
 /// Adds multiple network stubs to the stub store.
 /// - Parameter stubs: An array of `NetworkStub` instances to be added.
-public static func addStubs(_ stubs: [NetworkStub]) { }
+public static func addStubs(_ stubs: [NetworkStub?]) { }
 
 /// Sets a custom logger for the `NetworkStubber`.
 /// - Parameter customLogger: A logger conforming to `NetworkStubberLogProtocol` to handle log messages.
@@ -24,132 +29,153 @@ public static func setLogger(_ customLogger: NetworkStubberLogProtocol) { }
 public static func purge() { }
 ```
 
-## Getting Started:
+### Available Predicates:
 
-Network Stubber works by intercepting URLSession requests.
-To get started, create a `NetworkStub` which conforms to `NetworkStubProtocol` and add it to NetworkStubber.
-
-### Creating An Error Stub:
-
-To simulate an error response you can do the following:
 ```swift
-let url = URL(string: "https://api.example.com/data")!
-let error = NSError(domain: "com.example.error", code: -1009, userInfo: nil)
-let errorStub = NetworkStub(url: url, error: error)
-NetworkStubber.addStub(errorStub)
+// Matches if the host of the URL equals the specified host.
+.isHost("example.com")
+
+// Matches if the path of the URL equals the specified path.
+.isPath("/api")
+
+// Matches if the HTTP method equals the specified method.
+.isHTTPMethod(.get)
+
+// Matches if the request contains a header with the specified name and value.
+.hasHeaderField(name: "Content-Type", value: "application/json")
+
+// Matches if the request contains a header with the specified name (value ignored).
+.hasHeaderField(name: "Authorization")
+
+// Matches if the value of a request header matches a regular expression pattern.
+.headerFieldMatches(name: "Accept", pattern: "application/json.*")
+
+// Matches if the full URL equals the specified `URL`.
+.isURL(URL(string: "https://example.com")!)
+
+// Matches if the full URL string equals the specified string.
+.isURLString("https://example.com/path")
+
+// Matches if the URL path starts with the specified prefix.
+.hasPathPrefix("/api")
+
+// Matches if the URL path ends with the specified suffix.
+.hasPathSuffix(".json")
+
+// Matches if the URL has the specified path extension.
+.hasPathExtension("json")
+
+// Matches if the last path component of the URL equals the specified value.
+.hasLastPathComponent("index.json")
+
+// Matches if the URL contains all of the specified query items.
+.containsQueryItems([URLQueryItem(name: "id", value: "123")])
+
+// MARK: - Logical Composition
+
+// Negates a predicate.
+!NetworkStubPredicate.isHost("example.com")
+
+// Logical AND of multiple predicates.
+NetworkStubPredicate.isPath("/foo") && NetworkStubPredicate.isHTTPMethod(.get)
+
+// Logical OR of multiple predicates.
+NetworkStubPredicate.isPath("/foo") || NetworkStubPredicate.isPath("/bar")
+
+// MARK: - Constants
+
+// A predicate that always returns true.
+.alwaysTrue
+
+// A predicate that always returns false.
+.alwaysFalse
 ```
 
 ### Creating A Data Stub:
 
-To simulate a successful data response you can use a `NetworkStubDataItem`:
 ```swift
-let url = URL(string: "https://api.example.com/data")!
+let predicate = NetworkStubPredicate.isPath("/data")
 let responseData = Data("{ \"message\": \"Hello, world!\" }".utf8)
 let dataItem = NetworkStubDataItem(statusCode: 200, data: responseData)
-let stub = NetworkStub(url: url, data: dataItem)
-NetworkStubber.addStub(stub)
+let stub = NetworkStub(predicate: predicate, data: dataItem)
+NetworkStubber.add(stub)
 ```
 
 ### Creating A Full HTTP Response Stub:
 
-To to simulate a full HTTP response you can use a `NetworkStubResponseItem`:
 ```swift
-let url = URL(string: "https://api.example.com/data")!
-let httpResponse = HTTPURLResponse(url: url, statusCode: 404, httpVersion: nil, headerFields: ["Content-Type": "application/json"])!
+let predicate = NetworkStubPredicate.isURL(URL(string: "https://api.example.com/data")!)
+let httpResponse = HTTPURLResponse(url: predicate.predicateType.url!, statusCode: 404, httpVersion: nil, headerFields: ["Content-Type": "application/json"])!
 let responseData = Data("{ \"error\": \"Not Found\" }".utf8)
 let responseItem = NetworkStubResponseItem(response: httpResponse, data: responseData)
-let responseStub = NetworkStub(url: url, response: responseItem)
-NetworkStubber.addStub(responseStub)
+let responseStub = NetworkStub(predicate: predicate, response: responseItem)
+NetworkStubber.add(responseStub)
+```
+
+### Creating An Error Stub:
+
+```swift
+let predicate = NetworkStubPredicate.isHost("api.example.com")
+let error = NSError(domain: "com.example.error", code: -1009, userInfo: nil)
+let errorStub = NetworkStub(predicate: predicate, error: error)
+NetworkStubber.add(errorStub)
 ```
 
 ### Creating A Chain Of Stubs:
 
-Sometimes you might need to stub multiple calls to simulate a flow in your app.
-
 ```swift
-let authURL = URL(string: "https://api.example.com/auth")!
-let authResponseData = Data("{ \"token\": \"abc123\" }".utf8)
-let authDataItem = NetworkStubDataItem(statusCode: 200, data: authResponseData)
-let authStub = NetworkStub(url: authURL, data: authDataItem)
+let stubA = NetworkStub(
+  predicate: .isPath("/auth"),
+  data: NetworkStubDataItem(statusCode: 200, data: Data("{ \"token\": \"abc123\" }".utf8))
+)
 
-let profileURL = URL(string: "https://api.example.com/profile")!
-let profileResponseData = Data("{ \"name\": \"John Doe\", \"age\": 30 }".utf8)
-let profileDataItem = NetworkStubDataItem(statusCode: 200, data: profileResponseData)
-let profileStub = NetworkStub(url: profileURL, data: profileDataItem)
+let stubB = NetworkStub(
+  predicate: .isPath("/profile"),
+  data: NetworkStubDataItem(statusCode: 200, data: Data("{ \"name\": \"John\", \"age\": 30 }".utf8))
+)
 
-NetworkStubber.addStubs([authStub, profileStub])
+NetworkStubber.addStubs([stubA, stubB])
 ```
 
 ## Registering Network Stubber:
 
-In order to use your stubs you need to register the NetworkStubber:
-
 ```swift
 let configuration = URLSessionConfiguration.ephemeral
 configuration.protocolClasses = [NetworkStubber.self]
-session = URLSession(configuration: configuration)
+let session = URLSession(configuration: configuration)
 ```
 
 ## Logging:
 
-Logging can be invaluable for tracking network requests, diagnosing issues, and understanding app behavior during testing.
-Network Stubber allows you to configure your own logger by conforming to the `NetworkStubberLogProtocol`.
-
-
 ```swift
-struct TreeLogger: NetworkStubberLogProtocol {
-    func log(_ message: String) {
-        print("[NetworkStubber] \(message)")
-    }
+struct MyLogger: NetworkStubberLogProtocol {
+  func log(_ message: String) {
+    print("[NetworkStubber] \(message)")
+  }
 }
-NetworkStubber.setLogger(TreeLogger())
+NetworkStubber.setLogger(MyLogger())
 ```
 
 ## UI Tests:
 
-### Setting Launch Arguments For Stubs
-
-In a UI Test you can use the following helper method to generate NetworkStubs. An example of this can be seen in the DemoProjectUITest file.
+### Set Launch Arguments
 
 ```swift
-/// Adds stubs as launch arguments for UI tests
-/// - Parameter stubs: Array of `NetworkStub` objects
-public func setLaunchArgumentsForStubs(_ stubs: [NetworkStub]) {
+func setLaunchArgumentsForStubs(_ stubs: [NetworkStub]) {
   let encoder = JSONEncoder()
-  encoder.outputFormatting = .prettyPrinted
-
-  do {
-    let encodedData = try encoder.encode(stubs)
-    let base64String = encodedData.base64EncodedString()
-    app.launchArguments.append(contentsOf: ["-NetworkStubs", base64String])
-  } catch {
-    XCTFail("Failed to encode JSON for stubs: \(error)")
-  }
+  let data = try! encoder.encode(stubs)
+  let base64 = data.base64EncodedString()
+  app.launchArguments += ["-NetworkStubs", base64]
 }
 ```
-You can also use the function above and copy them directly into your App Scheme e.g:
+
+### Launch Argument Decoding:
+
+```swift
+NetworkStubLaunchArgumentProcessor.processLaunchArgumentsForStubs()
+```
+
+### Scheme Usage:
+You can paste the launch argument Base64 string into your app's scheme:
 
 <img src="Media/launchArguments.png" alt="iOS Swift URLSessionProtocol Mocking Package" width="276.6" height="148.5" />
-
-### Handling Launch Arguments:
-
-NetworkStubber comes with a convenience processor which can convert the launchArguments into NetworkStubs:
-
-```swift
-import NetworkStubberPackage
-import SwiftUI
-
-@main
-struct NetworkStubberDemoApp: App {
-
-  // MARK: - Body
-
-  var body: some Scene {
-    WindowGroup {
-      ContentView().onAppear {
-        NetworkStubLaunchArgumentProcessor.processLaunchArgumentsForStubs()
-      }
-    }
-  }
-}
-```
