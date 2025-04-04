@@ -174,8 +174,3 @@ func setLaunchArgumentsForStubs(_ stubs: [NetworkStub]) {
 ```swift
 NetworkStubLaunchArgumentProcessor.processLaunchArgumentsForStubs()
 ```
-
-### Scheme Usage:
-You can paste the launch argument Base64 string into your app's scheme:
-
-<img src="Media/launchArguments.png" alt="iOS Swift URLSessionProtocol Mocking Package" width="276.6" height="148.5" />
